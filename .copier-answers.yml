@@ -6,4 +6,4 @@ package_author_name: Dave Moran
 package_description: changeme
 package_github_org: DaveMoran
 package_module: dm_ast_analyzer
-package_name: AST-Analzyer
+package_name: AST-Analyzer
