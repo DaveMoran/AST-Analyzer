@@ -77,7 +77,7 @@ bump = true
 
 [tool.hatch.build.targets.wheel]
 # The source location for the package.
-packages = ["src/dm_ast_analyzer"]
+packages = ["src/ast_analyzer"]
 
 
 # ---- Settings ----
