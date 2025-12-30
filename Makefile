@@ -12,7 +12,7 @@ install:
 	uv sync --all-extras
 
 lint:
-	uv run python devtools/lint.py
+	uv run ruff format --check
 
 test:
 	uv run pytest
