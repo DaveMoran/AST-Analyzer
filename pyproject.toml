@@ -1,0 +1,17 @@
+[build-system]
+requires = ["uv_build >= 0.9.18, <0.10.0"]
+build-backend = "uv_build"
+
+[project]
+dynamic = ["version"]
+name = "dm-ast-analyzer"
+description = "Python Code Analyzer using AST Traversion"
+readme = "README.md"
+license = "GPL-2.0-or-later"
+keywords = ["ast", "code review"]
+authors = [
+  {name = "Dave Moran", email = "dave.moran118@gmail.com"}
+]
+maintainers = [
+  {name = "Dave Moran", email = "dave.moran118@gmail.com"}
+]
