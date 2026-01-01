@@ -37,19 +37,21 @@ class ASTNode:
     def __getitem__(self, i):
         return self.children[i]
 
-    def __iter__(self):
-        """Iterate over children nodes"""
-        return
-
-    def __contains__(self, item):
-        """checks if node contains an item"""
-        return
-
     def __str__(self):
         return f"AST Node | Children: {len(self)}"
 
+    def __iter__(self):
+        """Iterate over children nodes"""
+        raise NotImplementedError("ASTANA-5 will implement")
+
+    def __contains__(self, item):
+        """checks if node contains an item"""
+        raise NotImplementedError("ASTANA-5 will implement")
+
     def __eq__(self, other):
         """Determine if two nodes are the same"""
+        raise NotImplementedError("ASTANA-5 will implement")
 
     def __hash__(self):
         """Make node hashaboe to be used in sets/dicts"""
+        raise NotImplementedError("ASTANA-5 will implement")
