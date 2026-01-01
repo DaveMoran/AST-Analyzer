@@ -5,6 +5,8 @@ Responsible for going through the parsed files and determining what updates shou
 criteria of suggestions
 """
 
+from parser import AnalysisResult
+
 
 def analyzer():
     return "analyzer"
@@ -43,7 +45,7 @@ class CodeAnalyzer:
         If count > 5, add an error
         If count > 3, add a warning
         """
-        next
+        pass
 
     def _check_function_line_count(self):
         """
@@ -52,18 +54,18 @@ class CodeAnalyzer:
         If >= 50, add to warnings list.
         If >= 100, add to errors list.
         """
-        next
+        pass
 
     def _check_unused_imports(self):
         """
         TODO - implement this later in the bootcamp when we have a stronger
         understanding of Python code
         """
-        next
+        pass
 
     def _check_function_complexity(self):
         """
         Use a custom rubric to determine the complexity of the code. Combines
         findings from the existing result scan as well as other best practices
         """
-        next
+        pass
