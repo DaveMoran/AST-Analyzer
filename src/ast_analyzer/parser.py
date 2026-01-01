@@ -34,11 +34,8 @@ class AnalysisResult:
 
     def __getitem__(self, index):
         """Get a specific item from our results list"""
-        raise NotImplementedError("ASTANA-6 will implement")
+        return self.results[index]
 
     def __add__(self, other):
         """Combine with results from other scans"""
         raise NotImplementedError("ASTANA-6 will implement")
-
-    def __getitem__(self, i):
-        return self.results[i]
