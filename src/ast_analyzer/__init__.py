@@ -11,9 +11,18 @@ def main():
 
 
 class ASTNode:
-    """Wrapper around ast nodes with analysis metadata."""
+    """
+    Analyze parsed code via AST to generate findings.
 
-    def __init__(self, node: ast.AST, parent):
+    Args:
+        tree: The parsed AST tree to analyze
+
+    Attributes:
+        tree: The AST being analyzed
+        results: Accumulated analysis results
+    """
+
+    def __init__(self, node: ast.AST, parent: Optional["ASTNode"] = None) -> None:
         self.node = node
         self.parent = parent
         self.children = []
