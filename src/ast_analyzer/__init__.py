@@ -10,7 +10,7 @@ def main():
     print("Hello world!")
 
 
-def ASTNode():
+class ASTNode:
     """Wrapper around ast nodes with analysis metadata."""
 
     def __init__(self, node: ast.AST, parent):
