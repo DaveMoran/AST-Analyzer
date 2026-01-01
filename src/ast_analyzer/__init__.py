@@ -4,6 +4,7 @@ quality of the code
 """
 
 import ast
+from typing import Optional
 
 
 def main():
