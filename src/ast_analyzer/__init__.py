@@ -53,5 +53,5 @@ class ASTNode:
         raise NotImplementedError("ASTANA-5 will implement")
 
     def __hash__(self):
-        """Make node hashaboe to be used in sets/dicts"""
+        """Make node hashabloe to be used in sets/dicts"""
         raise NotImplementedError("ASTANA-5 will implement")
