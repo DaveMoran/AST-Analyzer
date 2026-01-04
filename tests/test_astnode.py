@@ -43,5 +43,6 @@ class TestASTNode(unittest.TestCase):
         assert len(test_set) == 1
 
     def test_iter(self):
-        """TODO - Ensure for loops can iterate over node children"""
-        return
+        for node in self.node:
+            assert str(node).startswith("AST Node")
+            assert repr(node).startswith("ASTNode")
