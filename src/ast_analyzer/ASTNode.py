@@ -41,7 +41,8 @@ class ASTNode:
         return f"AST Node | Children: {len(self)}"
 
     def __iter__(self):
-        return self.children
+        for child in self.children:
+            yield child
 
     def __contains__(self, item):
         return item in self.children
