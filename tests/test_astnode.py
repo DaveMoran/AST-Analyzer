@@ -58,3 +58,17 @@ class TestASTNode(unittest.TestCase):
         second_node = ASTNode(second_tree)
 
         assert self.node != second_node
+
+    def test_contains(self):
+        second_test = """
+        def greet_user(message, name):
+            intro = f"Hello, {name}! We have a special message for you"
+            return f"{intro}. {message}"
+        """
+
+        second_tree = ast.parse(textwrap.dedent(second_test))
+        second_node = ASTNode(second_tree)
+        first_child = self.node[0]
+
+        assert first_child in self.node
+        assert second_node not in self.node
