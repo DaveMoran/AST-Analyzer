@@ -46,3 +46,15 @@ class TestASTNode(unittest.TestCase):
         for node in self.node:
             assert str(node).startswith("AST Node")
             assert repr(node).startswith("ASTNode")
+
+    def test_eq(self):
+        second_code = """
+        greeting = 'Hello World!'
+        print(greeting)
+        """
+
+        dedented_second = textwrap.dedent(second_code)
+        second_tree = ast.parse(dedented_second)
+        second_node = ASTNode(second_tree)
+
+        assert self.node != second_node
