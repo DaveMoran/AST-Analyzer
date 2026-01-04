@@ -25,6 +25,7 @@ class TestASTNode(unittest.TestCase):
 
     def test_getitem(self):
         assert isinstance(self.node[0], ASTNode)
+        assert isinstance(self.node[0].node, ast.FunctionDef)
         with self.assertRaises(IndexError):
             self.node[3]
 
@@ -35,3 +36,12 @@ class TestASTNode(unittest.TestCase):
     def test_str(self):
         repr_str = str(self.node)
         assert repr_str == "AST Node | Children: 2"
+
+    def test_hash(self):
+        test_set = set()
+        test_set.add(self.node)
+        assert len(test_set) == 1
+
+    def test_iter(self):
+        """TODO - Ensure for loops can iterate over node children"""
+        return
