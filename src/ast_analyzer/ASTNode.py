@@ -11,7 +11,8 @@ class ASTNode:
     Analyze parsed code via AST to generate findings.
 
     Args:
-        tree: The parsed AST tree to analyze
+        node: The parsed tree to save in our AST Node
+        parent: The parent node that the child was generated from
 
     Attributes:
         tree: The AST being analyzed
@@ -23,6 +24,9 @@ class ASTNode:
         self.parent = parent
         self.children = []
         self.metadata = {}
+
+        for child in ast.iter_child_nodes(self.node):
+            self.children.append(ASTNode(child, self))
 
     def __repr__(self):
         return f"ASTNode({type(self.node).__name__})"
