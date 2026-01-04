@@ -1,3 +1,11 @@
+"""
+ASTNode Class file
+"""
+
+import ast
+from typing import Optional
+
+
 class ASTNode:
     """
     Analyze parsed code via AST to generate findings.
@@ -29,17 +37,13 @@ class ASTNode:
         return f"AST Node | Children: {len(self)}"
 
     def __iter__(self):
-        """Iterate over children nodes"""
-        raise NotImplementedError("ASTANA-5 will implement")
+        return self.children
 
     def __contains__(self, item):
-        """checks if node contains an item"""
-        raise NotImplementedError("ASTANA-5 will implement")
+        return item in self.children
 
     def __eq__(self, other):
-        """Determine if two nodes are the same"""
-        raise NotImplementedError("ASTANA-5 will implement")
+        return self.node == other.node
 
     def __hash__(self):
-        """Make node hashabloe to be used in sets/dicts"""
-        raise NotImplementedError("ASTANA-5 will implement")
+        return hash(self.node, self.parent, self.children, self.metadata)
