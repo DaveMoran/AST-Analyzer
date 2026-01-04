@@ -50,4 +50,4 @@ class ASTNode:
         return self.node == other.node
 
     def __hash__(self):
-        return hash(self.node, self.parent, self.children, self.metadata)
+        return hash((self.node, self.parent))
