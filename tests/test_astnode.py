@@ -29,17 +29,9 @@ class TestASTNode(unittest.TestCase):
             self.node[3]
 
     def test_repr(self):
-        """TODO - Ensure that repr returns debugging information"""
-        return
+        repr_str = repr(self.node)
+        assert repr_str == "ASTNode(Module)"
 
     def test_str(self):
-        """TODO - Ensure that str returns a user friendly string"""
-        return
-
-    def test_hash(self):
-        """TODO - Ensure that ASTNodes can be added to sets/dics"""
-        return
-
-    def test_iter(self):
-        """TODO - Ensure for loops can iterate over node children"""
-        return
+        repr_str = str(self.node)
+        assert repr_str == "AST Node | Children: 2"
