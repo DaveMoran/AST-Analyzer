@@ -5,7 +5,6 @@ from ast_analyzer.ASTNode import ASTNode
 
 
 class TestASTNode(unittest.TestCase):
-
     def setUp(self):
         test_code = """
         def greet_user(message, name):
