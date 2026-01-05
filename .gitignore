@@ -2,6 +2,9 @@
 CLAUDE.md
 AGENTS.md
 
+# MacOS
+.DS_Store
+
 # Additions to standard GitHub .gitignore:
 *.bak
 *.orig
