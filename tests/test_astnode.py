@@ -7,7 +7,6 @@ from ast_analyzer.ASTNode import ASTNode
 class TestASTNode(unittest.TestCase):
 
     def setUp(self):
-        """TODO - hook method for setting up fixtures before each test method is called"""
         test_code = """
         def greet_user(message, name):
             intro = f"Hello, {name}! We have a special message for you"
@@ -20,7 +19,6 @@ class TestASTNode(unittest.TestCase):
         self.node = ASTNode(test_tree)
 
     def test_len(self):
-        """TODO - Ensure that the pythonic len function works"""
         assert len(self.node) == 2
 
     def test_getitem(self):
