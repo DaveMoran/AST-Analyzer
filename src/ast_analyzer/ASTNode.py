@@ -23,7 +23,7 @@ class ASTNode:
         self.node = node
         self.parent = parent
         self.children = []
-        # self.metadata = {} TODO - Check if this is used for later imnplementation
+        self.metadata = {}
 
         for child in ast.iter_child_nodes(self.node):
             self.children.append(ASTNode(child, self))
