@@ -9,7 +9,7 @@ def factorial(n):
 
 
 @ast_timing
-def expensive_function(duration):
+def timed_sleep(duration):
     time.sleep(duration)
     return "Done"
 
@@ -26,22 +26,22 @@ def test_prints_timing_output(capsys):
 def test_longer_time(capsys):
     """Decorator should print out warning msg"""
 
-    expensive_function(0.5)
+    timed_sleep(0.5)
     captured = capsys.readouterr()
     assert "WARNING" in captured.out
 
 
-def test_accumulated_time(capsys):
+def test_accumulated_time():
     """Decorator should print out combined time"""
 
     @ast_timing
-    def local_expensive_function(duration):
+    def local_timed_sleep(duration):
         time.sleep(duration)
         return "Done"
 
-    local_expensive_function(0.3)
-    local_expensive_function(0.2)
-    local_expensive_function(0.1)
-    print(repr(local_expensive_function))
-    captured = capsys.readouterr()
-    assert "0.6" in captured.out
+    local_timed_sleep(0.3)
+    local_timed_sleep(0.2)
+    local_timed_sleep(0.1)
+
+    assert local_timed_sleep.times_called == 3
+    assert 0.59 < local_timed_sleep.accumulated_time < 0.61  # Allow 0.01s tolerance
