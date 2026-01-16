@@ -7,18 +7,20 @@ A list of helper functions that can be reused throughout the application
 import time
 import functools
 
+from typing import Callable, Any
+
 DEFAULT_FMT = "[{curr_time} | {time_taken:0.2f}s] {fn_name}({args}) -> {result}"
 
 
 class ast_timing:
-    def __init__(self, fn, fmt=DEFAULT_FMT):
+    def __init__(self, fn: Callable, fmt: str = DEFAULT_FMT):
         functools.wraps(fn)(self)
         self.fn = fn
         self.fmt = fmt
         self.accumulated_time = 0
         self.times_called = 0
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args: Any, **kwargs: Any):
         # Start timer
         curr_time = time.strftime("%H:%M:%S", time.localtime())
         start_time = time.perf_counter()
