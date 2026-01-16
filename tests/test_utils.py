@@ -45,3 +45,10 @@ def test_accumulated_time():
 
     assert local_timed_sleep.times_called == 3
     assert 0.59 < local_timed_sleep.accumulated_time < 0.61  # Allow 0.01s tolerance
+
+
+def test_return():
+    """Decorator does not affect the original function return"""
+    result = factorial(4)
+
+    assert result == 24
