@@ -42,3 +42,6 @@ class ast_timing:
             return _result
 
         return timestamp
+
+    def __repr__(self):
+        return f"Function '{self.func.__name__}' called {self.times_called} times. Total time: {self.accumulated_time:.2}s."
