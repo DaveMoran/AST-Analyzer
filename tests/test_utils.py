@@ -13,3 +13,11 @@ def test_prints_timing_output(capsys):
     captured = capsys.readouterr()
     assert "factorial" in captured.out
     assert "->" in captured.out
+
+
+def test_longer_time(capsys):
+    """Decorator should print out warning msg"""
+
+    expensive_function(0.5)
+    captured = capsys.readouterr()
+    assert "WARNING" in captured.out
