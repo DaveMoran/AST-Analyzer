@@ -29,3 +29,19 @@ def test_longer_time(capsys):
     expensive_function(0.5)
     captured = capsys.readouterr()
     assert "WARNING" in captured.out
+
+
+def test_accumulated_time(capsys):
+    """Decorator should print out combined time"""
+
+    @ast_timing
+    def local_expensive_function(duration):
+        time.sleep(duration)
+        return "Done"
+
+    local_expensive_function(0.3)
+    local_expensive_function(0.2)
+    local_expensive_function(0.1)
+    print(repr(local_expensive_function))
+    captured = capsys.readouterr()
+    assert "0.6" in captured.out
