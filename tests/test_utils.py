@@ -1,9 +1,17 @@
+import time
+
 from ast_analyzer.utils import ast_timing
 
 
-@ast_timing()
+@ast_timing
 def factorial(n):
     return 1 if n < 2 else n * factorial(n - 1)
+
+
+@ast_timing
+def expensive_function(duration):
+    time.sleep(duration)
+    return "Done"
 
 
 def test_prints_timing_output(capsys):
