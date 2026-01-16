@@ -24,6 +24,8 @@ class ast_timing:
             args = ", ".join(repr(arg) for arg in _args)
             result = repr(_result)
             print(self.fmt.format(**locals()))
+            if time_taken > 0.5:
+                print(f"{'-' * 20} WARNING: Function took longer than 0.5s {'-' * 20}")
             return _result
 
         return timestamp
