@@ -13,6 +13,10 @@ DEFAULT_FMT = "[{curr_time} | {time_taken:0.2f}s] {fn_name}({args}) -> {result}"
 
 
 class ast_timing:
+    """
+    Custom decorator that allows for functions to have timing metrics display per run
+    """
+
     def __init__(self, fn: Callable, fmt: str = DEFAULT_FMT):
         functools.wraps(fn)(self)
         self.fn = fn
