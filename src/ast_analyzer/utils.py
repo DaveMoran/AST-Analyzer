@@ -67,7 +67,11 @@ class ast_log:
 
         @functools.wraps(fn)
         def wrapper(*args, **kwargs):
-            self.log.log(self.level, self.logmsg)
-            return fn(*args, **kwargs)
+            self.log.log(logging.DEBUG, f"Begin Function {self.logmsg} | Args: {args}")
+            result = fn(*args, **kwargs)
+            self.log.log(
+                logging.DEBUG, f"Function {self.logname} Complete. Result: {result}"
+            )
+            return result
 
         return wrapper
