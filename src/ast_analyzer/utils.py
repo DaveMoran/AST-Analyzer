@@ -68,10 +68,16 @@ class ast_log:
         @functools.wraps(fn)
         def wrapper(*args, **kwargs):
             self.log.log(logging.DEBUG, f"Begin Function {self.logmsg} | Args: {args}")
-            result = fn(*args, **kwargs)
-            self.log.log(
-                logging.DEBUG, f"Function {self.logname} Complete. Result: {result}"
-            )
-            return result
+            try:
+                result = fn(*args, **kwargs)
+            except:
+                self.log.exception(
+                    f"Error during execution of {self.logmsg}. See traceback below",
+                )
+            else:
+                self.log.log(
+                    logging.DEBUG, f"Function {self.logname} Complete. Result: {result}"
+                )
+                return result
 
         return wrapper
