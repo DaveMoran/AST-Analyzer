@@ -54,6 +54,26 @@ class ast_timing:
 
 
 class ast_log:
+    """Decorator for logging function calls during AST analysis.
+
+    Logs function calls at a specified level with configurable logger
+    name and message. Useful for debugging and monitoring analyzer behavior.
+
+    Args:
+        level: Logging level (e.g., logging.DEBUG, logging.INFO)
+        name: Optional logger name (defaults to function's module)
+        message: Optional log message (defaults to function's name)
+
+    Example:
+        >>> @ast_log(logging.INFO)
+        ... def analyze_file(filepath):
+        ...     pass
+
+        >>> @ast_log(logging.DEBUG, name="analyzer", message="Processing")
+        ... def process():
+        ...     pass
+    """
+
     def __init__(
         self, level: int, name: Optional[str] = None, message: Optional[str] = None
     ):
