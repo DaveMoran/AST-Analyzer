@@ -4,8 +4,9 @@ ast_analyzer.utils
 A list of helper functions that can be reused throughout the application
 """
 
-import time
 import functools
+import logging
+import time
 
 from typing import Callable, Any
 
@@ -50,3 +51,23 @@ class ast_timing:
 
     def __repr__(self):
         return f"Function '{self.fn.__name__}' called {self.times_called} times. Total time: {self.accumulated_time:.2f}s."
+
+
+class ast_log:
+    def __init__(self, level, name=None, message=None):
+        self.level = level
+        self.logname = name
+        self.logmsg = message
+
+    def __call__(self, fn):
+        self.fn = fn
+        self.logname = self.logname if self.logname else fn.__module__
+        self.log = logging.getLogger(self.logname)
+        self.logmsg = self.logmsg if self.logmsg else fn.__name__
+
+        @functools.wraps(fn)
+        def wrapper(*args, **kwargs):
+            self.log.log(self.level, self.logmsg)
+            return fn(*args, **kwargs)
+
+        return wrapper
