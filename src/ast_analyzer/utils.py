@@ -8,7 +8,7 @@ import functools
 import logging
 import time
 
-from typing import Callable, Any
+from typing import Callable, Any, Optional
 
 DEFAULT_FMT = "[{curr_time} | {time_taken:0.2f}s] {fn_name}({args}) -> {result}"
 
@@ -54,12 +54,14 @@ class ast_timing:
 
 
 class ast_log:
-    def __init__(self, level, name=None, message=None):
+    def __init__(
+        self, level: int, name: Optional[str] = None, message: Optional[str] = None
+    ):
         self.level = level
         self.logname = name
         self.logmsg = message
 
-    def __call__(self, fn):
+    def __call__(self, fn: Callable[..., Any]):
         self.fn = fn
         self.logname = self.logname if self.logname else fn.__module__
         self.log = logging.getLogger(self.logname)
@@ -75,7 +77,9 @@ class ast_log:
                     f"Error during execution of {self.logmsg}. See traceback below",
                 )
             else:
-                self.log.log(self.level, f"Function {self.logname} Complete. Result: {result}")
+                self.log.log(
+                    self.level, f"Function {self.logname} Complete. Result: {result}"
+                )
                 return result
 
         return wrapper
