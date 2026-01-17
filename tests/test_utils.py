@@ -101,3 +101,17 @@ def test_with_custom_msg(caplog):
 
     assert "DEBUG" in caplog.text
     assert "Custom Message" in caplog.text
+
+
+@ast_log(logging.INFO, name="Math.Div", message="Division operation")
+def div(a, b):
+    return a / b
+
+
+def test_ast_log_full_custom(caplog):
+    with caplog.at_level(logging.INFO):
+        div(10, 2)
+
+    assert "INFO" in caplog.text
+    assert "Math.Div" in caplog.text
+    assert "Division operation" in caplog.text
