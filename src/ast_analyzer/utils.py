@@ -75,9 +75,7 @@ class ast_log:
                     f"Error during execution of {self.logmsg}. See traceback below",
                 )
             else:
-                self.log.log(
-                    logging.DEBUG, f"Function {self.logname} Complete. Result: {result}"
-                )
+                self.log.log(logging.DEBUG, f"Function {self.logname} Complete. Result: {result}")
                 return result
 
         return wrapper
