@@ -11,7 +11,7 @@ import os
 import time
 
 from pathlib import Path
-from typing import Callable, Any, Optional, Generator, AnyStr
+from typing import Callable, Any, Optional, Generator, AnyStr, Collection
 
 DEFAULT_FMT = "[{curr_time} | {time_taken:0.2f}s] {fn_name}({args}) -> {result}"
 
@@ -141,6 +141,13 @@ def filter_by_gitignore(files=Generator, ignore_file=AnyStr):
             yield file
 
 
+def filter_by_custom_matches(files=Generator, matches=Collection):
+    for file in files:
+        full_path = str(file)
+        if not any(match in full_path for match in matches):
+            yield file
+
+
 def skip_virtual_envs(files=Generator):
     virtual_envs = ["venv/", ".venv/", "env/"]
     for file in files:
@@ -164,13 +171,16 @@ def skip_git(files=Generator):
             yield file
 
 
-def get_working_files(directory=AnyStr) -> Generator:
+def get_working_files(directory=AnyStr, custom_matches=Collection) -> Generator:
     files = read_from_directory(directory)
 
     filtered_files = skip_git(
         skip_cache(
             skip_virtual_envs(
-                filter_python_files(filter_by_gitignore(files, ".gitignore"))
+                filter_by_custom_matches(
+                    filter_python_files(filter_by_gitignore(files, ".gitignore")),
+                    custom_matches,
+                )
             )
         )
     )
@@ -179,7 +189,7 @@ def get_working_files(directory=AnyStr) -> Generator:
 
 
 if __name__ == "__main__":
-    files = get_working_files("/usr/sbin")
+    files = get_working_files("./", ["tests"])
 
     for file in files:
         print(file)
