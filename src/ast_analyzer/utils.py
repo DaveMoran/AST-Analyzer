@@ -128,10 +128,15 @@ def filter_python_files(files):
             yield file
 
 
+def filter_by_gitignore(files, ignore_file):
+    gen_gitignore = read_lines(ignore_file)
+    for line in gen_gitignore:
+        print(line)
+
+
 python_files = filter_python_files(files)
 
-for file in python_files:
-    print(file)
+filter_by_gitignore(files, ".gitignore")
 
 
 def lines_starting_with_vowel(lines):
