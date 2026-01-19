@@ -59,13 +59,3 @@ class AnalysisResult:
     def __add__(self, other):
         """Combine with results from other scans"""
         raise NotImplementedError("ASTANA-6 will implement")
-
-
-filename = "./src/ast_analyzer/ASTNosde.py"
-
-try:
-    with Parser(filename) as f:
-        content = f.read()
-        print(content)
-except FileNotFoundError:
-    print("File not found")
