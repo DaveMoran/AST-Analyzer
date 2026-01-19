@@ -4,6 +4,8 @@ ast_analyzer.parser
 Traverse the project and transform the data into a readable format for the analzyer to use
 """
 
+import logging
+
 
 class Parser:
     def __init__(self, filename):
@@ -11,11 +13,13 @@ class Parser:
         self.file = None
 
     def __enter__(self):
+        logging.info(f"Begin parsing file {self.filename}")
         self.file = open(self.filename, "r")
         return self.file
 
     def __exit__(self, exc_type, exc_value, traceback):
         if self.file:
+            logging.info(f"File {self.filename} has been fully parsed")
             self.file.close()
 
         if exc_type:

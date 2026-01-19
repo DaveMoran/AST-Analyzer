@@ -12,6 +12,8 @@ from ast_analyzer.ASTNode import ASTNode
 from ast_analyzer.generators.file_traversal import get_working_files
 from ast_analyzer.parser import Parser
 
+logging.basicConfig(level=logging.INFO)
+
 
 def main():
     # Step 1: Ask user for directory of files
@@ -30,7 +32,6 @@ def main():
                 dedented_code = textwrap.dedent(content)
                 test_tree = ast.parse(dedented_code)
                 node = ASTNode(test_tree)
-                return node
 
         except FileNotFoundError:
             logging.exception(f"File not found: {file}")
