@@ -47,6 +47,7 @@ class logger:
                 self.log.exception(
                     f"Error during execution of {self.logmsg}. See traceback below",
                 )
+                raise
             else:
                 self.log.log(
                     self.level, f"Function {self.logname} Complete. Result: {result}"

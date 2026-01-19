@@ -1,4 +1,5 @@
 import logging
+import pytest
 
 from ast_analyzer.decorators.logger import logger
 
@@ -64,7 +65,8 @@ def failing_func():
 def test_ast_log_exception_handling(caplog):
     """Decorator should log exceptions when the wrapped function raises."""
     with caplog.at_level(logging.DEBUG):
-        failing_func()  # Note: exception is swallowed, returns None
+        with pytest.raises(Exception):
+            failing_func()
 
     assert "Error during execution" in caplog.text
     assert "ValueError" in caplog.text
