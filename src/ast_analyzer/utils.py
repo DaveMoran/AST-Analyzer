@@ -135,12 +135,34 @@ def filter_by_gitignore(files: Generator[Path, None, None], ignore_file: str):
         with open(ignore_file, "r") as f:
             gen_gitignore = f.readlines()
 
+        patterns = []
+        for line in gen_gitignore:
+            pattern = line.strip()
+            if pattern and not pattern.startswith("#"):
+                patterns.append(pattern)
+
         for file in files:
             is_match = False
-            for ignore_case in gen_gitignore:
-                ignore_case = ignore_case.strip()
-                if fnmatch.fnmatch(file.name, ignore_case):
+            relative_path = str(file)
+
+            for pattern in patterns:
+                # Handle directory patterns (ending with /)
+                if pattern.endswith("/"):
+                    # Check if any part of the path contains this directory
+                    if (
+                        pattern[:-1] in relative_path
+                        or f"/{pattern[:-1]}/" in relative_path
+                    ):
+                        is_match = True
+                        break
+                # Match against filename
+                elif fnmatch.fnmatch(file.name, pattern):
                     is_match = True
+                    break
+                # Match against full relative path for patterns with /
+                elif "/" in pattern and fnmatch.fnmatch(relative_path, pattern):
+                    is_match = True
+                    break
 
             if not is_match:
                 yield file
