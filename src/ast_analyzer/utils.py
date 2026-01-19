@@ -5,9 +5,8 @@ A list of helper functions that can be reused throughout the application
 """
 
 import functools
-import itertools
 import logging
-import re
+import os
 import time
 
 from pathlib import Path
@@ -143,7 +142,17 @@ def filter_by_gitignore(files, ignore_file):
             yield file
 
 
-filtered_files = filter_python_files(filter_by_gitignore(files, ".gitignore"))
+def filter_by_permission(files):
+    for file in files:
+        if os.access(str(file), os.R_OK):
+            yield file
+        else:
+            print(f"Read permission is not granted for file: {file}")
+
+
+filtered_files = filter_by_permission(
+    filter_python_files(filter_by_gitignore(files, ".gitignore"))
+)
 
 for file in filtered_files:
     print(file)
