@@ -109,7 +109,9 @@ class ast_log:
 
 
 def read_from_directory(directory):
-    filenames = (p.name for p in Path(directory).iterdir() if p.is_file())
+    filenames = (
+        file_path for file_path in Path(directory).rglob("*") if file_path.is_file()
+    )
     return filenames
 
 
@@ -119,13 +121,13 @@ def read_lines(filepath):
             yield line
 
 
-files = read_from_directory("src/ast_analyzer/")
+files = read_from_directory("src/")
 
 
 def filter_python_files(files):
     for file in files:
-        file_extension = file.split(".")[-1]
-        if file_extension == "py":
+        file_extension = file.suffix
+        if file_extension == ".py":
             yield file
 
 
@@ -134,7 +136,7 @@ def filter_by_gitignore(files, ignore_file):
     for file in files:
         gen_gitignore = read_lines(ignore_file)
         for ignore_case in gen_gitignore:
-            if file == ignore_case:
+            if file.name == ignore_case:
                 is_match = True
 
         if not is_match:
