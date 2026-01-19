@@ -240,25 +240,33 @@ class TestSkipGit:
 
 class TestGetWorkingFiles:
     def test_returns_only_python_files(self, temp_project):
-        files = list(get_working_files(str(temp_project), gitignore_path=str(temp_project / ".gitignore")))
+        files = list(
+            get_working_files(str(temp_project), gitignore_path=str(temp_project / ".gitignore"))
+        )
         extensions = {f.suffix for f in files}
 
         assert extensions == {".py"}
 
     def test_excludes_venv_files(self, temp_project):
-        files = list(get_working_files(str(temp_project), gitignore_path=str(temp_project / ".gitignore")))
+        files = list(
+            get_working_files(str(temp_project), gitignore_path=str(temp_project / ".gitignore"))
+        )
         paths_str = [str(f) for f in files]
 
         assert not any(".venv" in p for p in paths_str)
 
     def test_excludes_cache_files(self, temp_project):
-        files = list(get_working_files(str(temp_project), gitignore_path=str(temp_project / ".gitignore")))
+        files = list(
+            get_working_files(str(temp_project), gitignore_path=str(temp_project / ".gitignore"))
+        )
         paths_str = [str(f) for f in files]
 
         assert not any("__pycache__" in p for p in paths_str)
 
     def test_excludes_git_files(self, temp_project):
-        files = list(get_working_files(str(temp_project), gitignore_path=str(temp_project / ".gitignore")))
+        files = list(
+            get_working_files(str(temp_project), gitignore_path=str(temp_project / ".gitignore"))
+        )
         paths_str = [str(f) for f in files]
 
         assert not any(".git" in p for p in paths_str)
@@ -277,7 +285,9 @@ class TestGetWorkingFiles:
         assert any("src/" in p for p in paths_str)
 
     def test_returns_expected_source_files(self, temp_project):
-        files = list(get_working_files(str(temp_project), gitignore_path=str(temp_project / ".gitignore")))
+        files = list(
+            get_working_files(str(temp_project), gitignore_path=str(temp_project / ".gitignore"))
+        )
         filenames = [f.name for f in files]
 
         assert "main.py" in filenames
