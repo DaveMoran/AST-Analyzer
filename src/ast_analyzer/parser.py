@@ -15,11 +15,6 @@ class Parser:
         return self.file
 
     def __exit__(self, exc_type, exc_value, traceback):
-        print("---")
-        print(exc_type)
-        print(exc_value)
-        print("---")
-
         if self.file:
             self.file.close()
 

@@ -4,8 +4,11 @@ ast_analyzer.main
 Entry point for the AST Analyzer application
 """
 
+import ast
 import logging
+import textwrap
 
+from ast_analyzer.ASTNode import ASTNode
 from ast_analyzer.generators.file_traversal import get_working_files
 from ast_analyzer.parser import Parser
 
@@ -22,12 +25,16 @@ def main():
         # Step 4: Parse through the lines of each file
         try:
             with Parser(file) as f:
+                # Step 5: Create an AST Node of each file
                 content = f.read()
-                print(content)
+                dedented_code = textwrap.dedent(content)
+                test_tree = ast.parse(dedented_code)
+                node = ASTNode(test_tree)
+                print(repr(node))
+
         except FileNotFoundError:
             logging.exception(f"File not found: {file}")
 
-    # Step 5: Create an AST Node of each file
     # Step 6: Run the nodes through our analysis
     # Step 7: Generate a report based on findings
     print("Hello world")
