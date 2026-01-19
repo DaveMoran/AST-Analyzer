@@ -42,8 +42,8 @@ def main():
         except UnicodeDecodeError:
             logging.exception(f"{file} contains encoding issues")
 
-    # Step 6: Run the nodes through our analysis
-    # Step 7: Generate a report based on findings
+    # Step 6: Run the nodes through our analysis - ASTANA-6
+    # Step 7: Generate a report based on findings - ASTANA-11
     print("Hello world")
 
 
