@@ -17,7 +17,7 @@ class Parser:
         >>> file_parser = Parser('./src/ast_analyzer/parser.py')
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename: str):
         self.filename = filename
         self.file = None
 
@@ -34,7 +34,10 @@ class Parser:
             self.file.close()
 
         if exc_type:
-            print(f"An exception of type {exc_type.__name__} has occured")
+            logging.error(
+                f"Exception when trying to parse {self.filename}:",
+                exc_info=(exc_type, exc_value, traceback),
+            )
         return False
 
 
