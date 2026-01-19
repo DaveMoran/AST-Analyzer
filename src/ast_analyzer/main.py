@@ -5,6 +5,7 @@ Entry point for the AST Analyzer application
 """
 
 from ast_analyzer.generators.file_traversal import get_working_files
+from ast_analyzer.parser import Parser
 
 
 def main():
@@ -16,8 +17,14 @@ def main():
 
     # Step 3: Start iterating through each file
     for file in working_files:
-        print(file)
-    # Step 4: Parse through the lines of each file
+        # Step 4: Parse through the lines of each file
+        try:
+            with Parser(file) as f:
+                content = f.read()
+                print(content)
+        except FileNotFoundError:
+            print("File not found")
+
     # Step 5: Create an AST Node of each file
     # Step 6: Run the nodes through our analysis
     # Step 7: Generate a report based on findings
