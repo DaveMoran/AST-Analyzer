@@ -76,7 +76,9 @@ class ast_log:
         ...     pass
     """
 
-    def __init__(self, level: int, name: Optional[str] = None, message: Optional[str] = None):
+    def __init__(
+        self, level: int, name: Optional[str] = None, message: Optional[str] = None
+    ):
         self.level = level
         self.logname = name
         self.logmsg = message
@@ -97,14 +99,18 @@ class ast_log:
                     f"Error during execution of {self.logmsg}. See traceback below",
                 )
             else:
-                self.log.log(self.level, f"Function {self.logname} Complete. Result: {result}")
+                self.log.log(
+                    self.level, f"Function {self.logname} Complete. Result: {result}"
+                )
                 return result
 
         return wrapper
 
 
 def read_from_directory(directory):
-    filenames = (file_path for file_path in Path(directory).rglob("*") if file_path.is_file())
+    filenames = (
+        file_path for file_path in Path(directory).rglob("*") if file_path.is_file()
+    )
     return filenames
 
 
@@ -112,9 +118,6 @@ def read_lines(filepath):
     with open(filepath) as f:
         for line in f:
             yield line
-
-
-files = read_from_directory("src/")
 
 
 def filter_python_files(files):
@@ -144,7 +147,11 @@ def filter_by_permission(files):
             print(f"Read permission is not granted for file: {file}")
 
 
-filtered_files = filter_by_permission(filter_python_files(filter_by_gitignore(files, ".gitignore")))
+def get_working_files(directory):
+    files = read_from_directory(directory)
 
-for file in filtered_files:
-    print(file)
+    filtered_files = filter_by_permission(
+        filter_python_files(filter_by_gitignore(files, ".gitignore"))
+    )
+
+    return filtered_files
