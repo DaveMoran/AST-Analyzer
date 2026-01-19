@@ -4,7 +4,7 @@ import logging
 from typing import Callable, Any, Optional
 
 
-class ast_log:
+class logger:
     """Decorator for logging function calls during AST analysis.
 
     Logs function calls at a specified level with configurable logger
@@ -16,11 +16,11 @@ class ast_log:
         message: Optional log message (defaults to function's name)
 
     Example:
-        >>> @ast_log(logging.INFO)
+        >>> @logger(logging.INFO)
         ... def analyze_file(filepath):
         ...     pass
 
-        >>> @ast_log(logging.DEBUG, name="analyzer", message="Processing")
+        >>> @logger(logging.DEBUG, name="analyzer", message="Processing")
         ... def process():
         ...     pass
     """
