@@ -108,9 +108,11 @@ class ast_log:
         return wrapper
 
 
-def read_from_directory(directory=AnyStr):
+def read_from_directory(directory=AnyStr) -> Generator:
     filenames = (
-        file_path for file_path in Path(directory).rglob("*") if file_path.is_file()
+        file_path
+        for file_path in Path(directory).rglob("*")
+        if os.access(str(file_path), os.R_OK) and file_path.is_file()
     )
     return filenames
 
@@ -139,14 +141,6 @@ def filter_by_gitignore(files=Generator, ignore_file=AnyStr):
             yield file
 
 
-def filter_by_permission(files=Generator):
-    for file in files:
-        if os.access(str(file), os.R_OK):
-            yield file
-        else:
-            print(f"Read permission is not granted for file: {file}")
-
-
 def skip_virtual_envs(files=Generator):
     virtual_envs = ["venv/", ".venv/", "env/"]
     for file in files:
@@ -170,15 +164,13 @@ def skip_git(files=Generator):
             yield file
 
 
-def get_working_files(directory=AnyStr):
+def get_working_files(directory=AnyStr) -> Generator:
     files = read_from_directory(directory)
 
     filtered_files = skip_git(
         skip_cache(
             skip_virtual_envs(
-                filter_by_permission(
-                    filter_python_files(filter_by_gitignore(files, ".gitignore"))
-                )
+                filter_python_files(filter_by_gitignore(files, ".gitignore"))
             )
         )
     )
@@ -187,7 +179,7 @@ def get_working_files(directory=AnyStr):
 
 
 if __name__ == "__main__":
-    files = get_working_files("./")
+    files = get_working_files("/usr/sbin")
 
     for file in files:
         print(file)
