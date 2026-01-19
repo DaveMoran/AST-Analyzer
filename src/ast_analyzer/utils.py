@@ -7,6 +7,7 @@ A list of helper functions that can be reused throughout the application
 import functools
 import logging
 import os
+import re
 import time
 
 from pathlib import Path
@@ -128,11 +129,11 @@ def filter_python_files(files):
 
 
 def filter_by_gitignore(files, ignore_file):
-    is_match = False
     for file in files:
+        is_match = False
         gen_gitignore = read_lines(ignore_file)
         for ignore_case in gen_gitignore:
-            if file.name == ignore_case:
+            if re.search(ignore_case.strip(), file.name):
                 is_match = True
 
         if not is_match:
