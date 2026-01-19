@@ -5,6 +5,7 @@ A list of helper functions that can be reused throughout the application
 """
 
 import functools
+import itertools
 import logging
 import re
 import time
@@ -129,14 +130,21 @@ def filter_python_files(files):
 
 
 def filter_by_gitignore(files, ignore_file):
-    gen_gitignore = read_lines(ignore_file)
-    for line in gen_gitignore:
-        print(line)
+    is_match = False
+    for file in files:
+        gen_gitignore = read_lines(ignore_file)
+        for ignore_case in gen_gitignore:
+            if file == ignore_case:
+                is_match = True
+
+        if not is_match:
+            yield file
 
 
-python_files = filter_python_files(files)
+filtered_files = filter_by_gitignore(files, ".gitignore")
 
-filter_by_gitignore(files, ".gitignore")
+for file in filtered_files:
+    print(file)
 
 
 def lines_starting_with_vowel(lines):
