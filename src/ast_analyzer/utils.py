@@ -176,8 +176,22 @@ def skip_git(files: Generator[Path, None, None]):
 
 
 def get_working_files(
-    directory: str, custom_matches: Collection
+    directory: str, custom_matches: Collection = []
 ) -> Generator[Path, None, None]:
+    """Parent generator for getting a final list of files to traverse
+
+    Using a number of generators, this function traverses a parent directory and
+    pulls out all relevant files that we want to test our AST_Analyzer against
+
+    Args:
+        directory | str: Parent directory to grab all files from
+        custom_matches | Collection: Custom strings to check file names against
+
+    Example:
+        >>> curr_python_files = get_working_files('./')
+
+        >>> curr_python_files_no_tests = get_working_files('./', ['test/', 'tests/'])
+    """
     files = read_from_directory(directory)
 
     filtered_files = skip_git(
@@ -192,10 +206,3 @@ def get_working_files(
     )
 
     return filtered_files
-
-
-if __name__ == "__main__":
-    files = get_working_files("./", ["tests"])
-
-    for file in files:
-        print(file)
