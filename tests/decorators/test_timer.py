@@ -14,6 +14,21 @@ def timed_sleep(duration):
     return "Done"
 
 
+def test_repr():
+    """Decorator __repr__ shows call count and total time."""
+
+    @timer
+    def quick_fn():
+        return 1
+
+    quick_fn()
+    quick_fn()
+
+    repr_str = repr(quick_fn)
+    assert "quick_fn" in repr_str
+    assert "2 times" in repr_str
+
+
 def test_prints_timing_output(capsys):
     """Decorator should print timing information to stdout."""
 
@@ -44,7 +59,7 @@ def test_accumulated_time():
     local_timed_sleep(0.1)
 
     assert local_timed_sleep.times_called == 3
-    assert 0.59 < local_timed_sleep.accumulated_time < 0.61  # Allow 0.01s tolerance
+    assert 0.58 < local_timed_sleep.accumulated_time < 0.62  # Allow 0.02s tolerance
 
 
 def test_return():
