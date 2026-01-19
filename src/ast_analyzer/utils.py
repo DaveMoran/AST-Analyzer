@@ -11,7 +11,7 @@ import os
 import time
 
 from pathlib import Path
-from typing import Callable, Any, Optional
+from typing import Callable, Any, Optional, Generator, AnyStr
 
 DEFAULT_FMT = "[{curr_time} | {time_taken:0.2f}s] {fn_name}({args}) -> {result}"
 
@@ -108,25 +108,25 @@ class ast_log:
         return wrapper
 
 
-def read_from_directory(directory):
+def read_from_directory(directory=AnyStr):
     filenames = (
         file_path for file_path in Path(directory).rglob("*") if file_path.is_file()
     )
     return filenames
 
 
-def read_lines(filepath):
+def read_lines(filepath=Path):
     with open(filepath) as f:
         for line in f:
             yield line
 
 
-def filter_python_files(files):
+def filter_python_files(files=Generator):
     for file in files:
         yield file
 
 
-def filter_by_gitignore(files, ignore_file):
+def filter_by_gitignore(files=Generator, ignore_file=AnyStr):
     for file in files:
         is_match = False
         gen_gitignore = read_lines(ignore_file)
@@ -139,7 +139,7 @@ def filter_by_gitignore(files, ignore_file):
             yield file
 
 
-def filter_by_permission(files):
+def filter_by_permission(files=Generator):
     for file in files:
         if os.access(str(file), os.R_OK):
             yield file
@@ -147,7 +147,7 @@ def filter_by_permission(files):
             print(f"Read permission is not granted for file: {file}")
 
 
-def skip_virtual_envs(files):
+def skip_virtual_envs(files=Generator):
     virtual_envs = ["venv/", ".venv/", "env/"]
     for file in files:
         full_path = str(file)
@@ -155,7 +155,7 @@ def skip_virtual_envs(files):
             yield file
 
 
-def skip_cache(files):
+def skip_cache(files=Generator):
     caches = ["__pycache__/", ".mypy_cache/", ".pytest_cache/", ".ruff_cache/"]
     for file in files:
         full_path = str(file)
@@ -163,14 +163,14 @@ def skip_cache(files):
             yield file
 
 
-def skip_git(files):
+def skip_git(files=Generator):
     for file in files:
         full_path = str(file)
         if ".git" not in full_path:
             yield file
 
 
-def get_working_files(directory):
+def get_working_files(directory=AnyStr):
     files = read_from_directory(directory)
 
     filtered_files = skip_git(
