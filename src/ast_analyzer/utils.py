@@ -4,10 +4,10 @@ ast_analyzer.utils
 A list of helper functions that can be reused throughout the application
 """
 
+import fnmatch
 import functools
 import logging
 import os
-import re
 import time
 
 from pathlib import Path
@@ -133,7 +133,8 @@ def filter_by_gitignore(files, ignore_file):
         is_match = False
         gen_gitignore = read_lines(ignore_file)
         for ignore_case in gen_gitignore:
-            if re.search(ignore_case.strip(), file.name):
+            ignore_case = ignore_case.strip()
+            if fnmatch.fnmatch(file.name, ignore_case):
                 is_match = True
 
         if not is_match:
@@ -148,11 +149,27 @@ def filter_by_permission(files):
             print(f"Read permission is not granted for file: {file}")
 
 
+def filter_by_virtual_env(files):
+    virtual_envs = ["venv/", ".venv/", "env/"]
+    for file in files:
+        full_path = str(file.resolve())
+        if not any(env in full_path for env in virtual_envs):
+            yield file
+
+
 def get_working_files(directory):
     files = read_from_directory(directory)
 
-    filtered_files = filter_by_permission(
-        filter_python_files(filter_by_gitignore(files, ".gitignore"))
+    filtered_files = filter_by_virtual_env(
+        filter_by_permission(
+            filter_python_files(filter_by_gitignore(files, ".gitignore"))
+        )
     )
 
     return filtered_files
+
+
+files = get_working_files("./")
+
+for file in files:
+    print(file)
