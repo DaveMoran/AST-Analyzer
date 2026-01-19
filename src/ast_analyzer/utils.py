@@ -125,7 +125,9 @@ def read_lines(filepath: Path):
 
 def filter_python_files(files: Generator[Path, None, None]):
     for file in files:
-        yield file
+        file_extension = file.suffix
+        if file_extension == ".py":
+            yield file
 
 
 def filter_by_gitignore(files: Generator[Path, None, None], ignore_file: str):
