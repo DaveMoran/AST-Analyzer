@@ -149,7 +149,7 @@ def filter_by_permission(files):
             print(f"Read permission is not granted for file: {file}")
 
 
-def filter_by_virtual_env(files):
+def skip_virtual_envs(files):
     virtual_envs = ["venv/", ".venv/", "env/"]
     for file in files:
         full_path = str(file.resolve())
@@ -160,7 +160,7 @@ def filter_by_virtual_env(files):
 def get_working_files(directory):
     files = read_from_directory(directory)
 
-    filtered_files = filter_by_virtual_env(
+    filtered_files = skip_virtual_envs(
         filter_by_permission(
             filter_python_files(filter_by_gitignore(files, ".gitignore"))
         )
