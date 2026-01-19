@@ -13,6 +13,8 @@ class Parser:
         self.file = None
 
     def __enter__(self):
+        if self.file is not None and self.file.closed:
+            raise ValueError("Cannot reuse Parser instance after file is closed")
         logging.info(f"Begin parsing file {self.filename}")
         self.file = open(self.filename, "r")
         return self.file
