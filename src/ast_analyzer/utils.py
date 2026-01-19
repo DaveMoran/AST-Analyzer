@@ -150,22 +150,22 @@ def filter_by_permission(files):
 def skip_virtual_envs(files):
     virtual_envs = ["venv/", ".venv/", "env/"]
     for file in files:
-        full_path = str(file.resolve())
+        full_path = str(file)
         if not any(env in full_path for env in virtual_envs):
             yield file
 
 
 def skip_cache(files):
-    caches = ["__pycache__/", ".mypy_cache/"]
+    caches = ["__pycache__/", ".mypy_cache/", ".pytest_cache/", ".ruff_cache/"]
     for file in files:
-        full_path = str(file.resolve())
+        full_path = str(file)
         if not any(cache in full_path for cache in caches):
             yield file
 
 
 def skip_git(files):
     for file in files:
-        full_path = str(file.resolve())
+        full_path = str(file)
         if ".git" not in full_path:
             yield file
 
@@ -186,7 +186,8 @@ def get_working_files(directory):
     return filtered_files
 
 
-files = get_working_files("./")
+if __name__ == "__main__":
+    files = get_working_files("./")
 
-for file in files:
-    print(file)
+    for file in files:
+        print(file)
