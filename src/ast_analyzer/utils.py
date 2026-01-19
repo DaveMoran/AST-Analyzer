@@ -11,7 +11,7 @@ import os
 import time
 
 from pathlib import Path
-from typing import Callable, Any, Optional, Generator, AnyStr, Collection
+from typing import Callable, Any, Optional, Generator, Collection
 
 DEFAULT_FMT = "[{curr_time} | {time_taken:0.2f}s] {fn_name}({args}) -> {result}"
 
@@ -77,7 +77,9 @@ class ast_log:
         ...     pass
     """
 
-    def __init__(self, level: int, name: Optional[str] = None, message: Optional[str] = None):
+    def __init__(
+        self, level: int, name: Optional[str] = None, message: Optional[str] = None
+    ):
         self.level = level
         self.logname = name
         self.logmsg = message
@@ -98,13 +100,15 @@ class ast_log:
                     f"Error during execution of {self.logmsg}. See traceback below",
                 )
             else:
-                self.log.log(self.level, f"Function {self.logname} Complete. Result: {result}")
+                self.log.log(
+                    self.level, f"Function {self.logname} Complete. Result: {result}"
+                )
                 return result
 
         return wrapper
 
 
-def read_from_directory(directory=AnyStr) -> Generator:
+def read_from_directory(directory: str) -> Generator:
     filenames = (
         file_path
         for file_path in Path(directory).rglob("*")
@@ -113,18 +117,18 @@ def read_from_directory(directory=AnyStr) -> Generator:
     return filenames
 
 
-def read_lines(filepath=Path):
+def read_lines(filepath: Path):
     with open(filepath) as f:
         for line in f:
             yield line
 
 
-def filter_python_files(files=Generator):
+def filter_python_files(files: Generator):
     for file in files:
         yield file
 
 
-def filter_by_gitignore(files=Generator, ignore_file=AnyStr):
+def filter_by_gitignore(files: Generator, ignore_file: str):
     for file in files:
         is_match = False
         gen_gitignore = read_lines(ignore_file)
@@ -137,14 +141,14 @@ def filter_by_gitignore(files=Generator, ignore_file=AnyStr):
             yield file
 
 
-def filter_by_custom_matches(files=Generator, matches=Collection):
+def filter_by_custom_matches(files: Generator, matches: Collection):
     for file in files:
         full_path = str(file)
         if not any(match in full_path for match in matches):
             yield file
 
 
-def skip_virtual_envs(files=Generator):
+def skip_virtual_envs(files: Generator):
     virtual_envs = ["venv/", ".venv/", "env/"]
     for file in files:
         full_path = str(file)
@@ -152,7 +156,7 @@ def skip_virtual_envs(files=Generator):
             yield file
 
 
-def skip_cache(files=Generator):
+def skip_cache(files: Generator):
     caches = ["__pycache__/", ".mypy_cache/", ".pytest_cache/", ".ruff_cache/"]
     for file in files:
         full_path = str(file)
@@ -160,14 +164,14 @@ def skip_cache(files=Generator):
             yield file
 
 
-def skip_git(files=Generator):
+def skip_git(files: Generator):
     for file in files:
         full_path = str(file)
         if ".git" not in full_path:
             yield file
 
 
-def get_working_files(directory=AnyStr, custom_matches=Collection) -> Generator:
+def get_working_files(directory: str, custom_matches: Collection) -> Generator:
     files = read_from_directory(directory)
 
     filtered_files = skip_git(
