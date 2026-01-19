@@ -30,10 +30,16 @@ def main():
                 dedented_code = textwrap.dedent(content)
                 test_tree = ast.parse(dedented_code)
                 node = ASTNode(test_tree)
-                print(repr(node))
+                return node
 
         except FileNotFoundError:
             logging.exception(f"File not found: {file}")
+
+        except SyntaxError:
+            logging.exception(f"{file} contains a Syntax error")
+
+        except UnicodeDecodeError:
+            logging.exception(f"{file} contains encoding issues")
 
     # Step 6: Run the nodes through our analysis
     # Step 7: Generate a report based on findings
