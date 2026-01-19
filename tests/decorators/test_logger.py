@@ -54,3 +54,17 @@ def test_ast_log_full_custom(caplog):
     assert "INFO" in caplog.text
     assert "Math.Div" in caplog.text
     assert "Division operation" in caplog.text
+
+
+@logger(logging.DEBUG)
+def failing_func():
+    raise ValueError("test error")
+
+
+def test_ast_log_exception_handling(caplog):
+    """Decorator should log exceptions when the wrapped function raises."""
+    with caplog.at_level(logging.DEBUG):
+        failing_func()  # Note: exception is swallowed, returns None
+
+    assert "Error during execution" in caplog.text
+    assert "ValueError" in caplog.text
