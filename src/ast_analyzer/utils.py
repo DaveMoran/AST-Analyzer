@@ -108,7 +108,7 @@ class ast_log:
         return wrapper
 
 
-def read_from_directory(directory: str) -> Generator:
+def read_from_directory(directory: str) -> Generator[Path, None, None]:
     filenames = (
         file_path
         for file_path in Path(directory).rglob("*")
@@ -123,12 +123,12 @@ def read_lines(filepath: Path):
             yield line
 
 
-def filter_python_files(files: Generator):
+def filter_python_files(files: Generator[Path, None, None]):
     for file in files:
         yield file
 
 
-def filter_by_gitignore(files: Generator, ignore_file: str):
+def filter_by_gitignore(files: Generator[Path, None, None], ignore_file: str):
     for file in files:
         is_match = False
         gen_gitignore = read_lines(ignore_file)
@@ -141,14 +141,14 @@ def filter_by_gitignore(files: Generator, ignore_file: str):
             yield file
 
 
-def filter_by_custom_matches(files: Generator, matches: Collection):
+def filter_by_custom_matches(files: Generator[Path, None, None], matches: Collection):
     for file in files:
         full_path = str(file)
         if not any(match in full_path for match in matches):
             yield file
 
 
-def skip_virtual_envs(files: Generator):
+def skip_virtual_envs(files: Generator[Path, None, None]):
     virtual_envs = ["venv/", ".venv/", "env/"]
     for file in files:
         full_path = str(file)
@@ -156,7 +156,7 @@ def skip_virtual_envs(files: Generator):
             yield file
 
 
-def skip_cache(files: Generator):
+def skip_cache(files: Generator[Path, None, None]):
     caches = ["__pycache__/", ".mypy_cache/", ".pytest_cache/", ".ruff_cache/"]
     for file in files:
         full_path = str(file)
@@ -164,14 +164,16 @@ def skip_cache(files: Generator):
             yield file
 
 
-def skip_git(files: Generator):
+def skip_git(files: Generator[Path, None, None]):
     for file in files:
         full_path = str(file)
         if ".git" not in full_path:
             yield file
 
 
-def get_working_files(directory: str, custom_matches: Collection) -> Generator:
+def get_working_files(
+    directory: str, custom_matches: Collection
+) -> Generator[Path, None, None]:
     files = read_from_directory(directory)
 
     filtered_files = skip_git(
