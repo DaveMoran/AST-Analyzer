@@ -108,17 +108,19 @@ class ast_log:
 
 
 def read_from_directory(directory):
-    filenames = [p.name for p in Path(directory).iterdir() if p.is_file()]
+    filenames = (p.name for p in Path(directory).iterdir() if p.is_file())
     return filenames
-
-
-print(read_from_directory("."))
 
 
 def read_lines(filepath):
     with open(filepath) as f:
         for line in f:
             yield line
+
+
+files = read_from_directory(".")
+
+print(files)
 
 
 def lines_starting_with_vowel(lines):
