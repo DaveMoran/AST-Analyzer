@@ -11,13 +11,20 @@ class Parser:
         self.file = None
 
     def __enter__(self):
-        self.file = open(self.filename)
+        self.file = open(self.filename, "r")
         return self.file
 
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_value, traceback):
+        print("---")
+        print(exc_type)
+        print(exc_value)
+        print("---")
+
         if self.file:
             self.file.close()
 
+        if exc_type:
+            print(f"An exception of type {exc_type.__name__} has occured")
         return False
 
 
@@ -52,3 +59,13 @@ class AnalysisResult:
     def __add__(self, other):
         """Combine with results from other scans"""
         raise NotImplementedError("ASTANA-6 will implement")
+
+
+filename = "./src/ast_analyzer/ASTNosde.py"
+
+try:
+    with Parser(filename) as f:
+        content = f.read()
+        print(content)
+except FileNotFoundError:
+    print("File not found")
