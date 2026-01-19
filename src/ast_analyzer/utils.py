@@ -77,9 +77,7 @@ class ast_log:
         ...     pass
     """
 
-    def __init__(
-        self, level: int, name: Optional[str] = None, message: Optional[str] = None
-    ):
+    def __init__(self, level: int, name: Optional[str] = None, message: Optional[str] = None):
         self.level = level
         self.logname = name
         self.logmsg = message
@@ -100,9 +98,7 @@ class ast_log:
                     f"Error during execution of {self.logmsg}. See traceback below",
                 )
             else:
-                self.log.log(
-                    self.level, f"Function {self.logname} Complete. Result: {result}"
-                )
+                self.log.log(self.level, f"Function {self.logname} Complete. Result: {result}")
                 return result
 
         return wrapper
@@ -117,13 +113,15 @@ def read_from_directory(directory: str) -> Generator[Path, None, None]:
     return filenames
 
 
-def read_lines(filepath: Path):
+def read_lines(filepath: Path) -> Generator[str, None, None]:
     with open(filepath) as f:
         for line in f:
             yield line
 
 
-def filter_python_files(files: Generator[Path, None, None]):
+def filter_python_files(
+    files: Generator[Path, None, None],
+) -> Generator[Path, None, None]:
     for file in files:
         file_extension = file.suffix
         if file_extension == ".py":
@@ -131,53 +129,59 @@ def filter_python_files(files: Generator[Path, None, None]):
 
 
 def filter_by_gitignore(files: Generator[Path, None, None], ignore_file: str):
+    patterns = []
+
     try:
         with open(ignore_file, "r") as f:
             gen_gitignore = f.readlines()
 
-        patterns = []
         for line in gen_gitignore:
             pattern = line.strip()
             if pattern and not pattern.startswith("#"):
                 patterns.append(pattern)
 
-        for file in files:
-            is_match = False
-            relative_path = str(file)
+    except (FileNotFoundError, PermissionError):
+        # No .gitignore or can't read it - yield all files
+        logging.warning(f"Could not read {ignore_file}, skipping gitignore filtering")
+        yield from files
+        return
 
-            for pattern in patterns:
-                # Handle directory patterns (ending with /)
-                if pattern.endswith("/"):
-                    # Check if any part of the path contains this directory
-                    if (
-                        pattern[:-1] in relative_path
-                        or f"/{pattern[:-1]}/" in relative_path
-                    ):
-                        is_match = True
-                        break
-                # Match against filename
-                elif fnmatch.fnmatch(file.name, pattern):
+    for file in files:
+        is_match = False
+        relative_path = str(file)
+
+        for pattern in patterns:
+            # Handle directory patterns (ending with /)
+            if pattern.endswith("/"):
+                # Check if any part of the path contains this directory
+                if pattern[:-1] in relative_path or f"/{pattern[:-1]}/" in relative_path:
                     is_match = True
                     break
-                # Match against full relative path for patterns with /
-                elif "/" in pattern and fnmatch.fnmatch(relative_path, pattern):
-                    is_match = True
-                    break
+            # Match against filename
+            elif fnmatch.fnmatch(file.name, pattern):
+                is_match = True
+                break
+            # Match against full relative path for patterns with /
+            elif "/" in pattern and fnmatch.fnmatch(relative_path, pattern):
+                is_match = True
+                break
 
-            if not is_match:
-                yield file
-    except FileNotFoundError:
-        logging.exception("File not found")
+        if not is_match:
+            yield file
 
 
-def filter_by_custom_matches(files: Generator[Path, None, None], matches: Collection):
+def filter_by_custom_matches(
+    files: Generator[Path, None, None], matches: Collection
+) -> Generator[Path, None, None]:
     for file in files:
         full_path = str(file)
         if not any(match in full_path for match in matches):
             yield file
 
 
-def skip_virtual_envs(files: Generator[Path, None, None]):
+def skip_virtual_envs(
+    files: Generator[Path, None, None],
+) -> Generator[Path, None, None]:
     virtual_envs = ["venv/", ".venv/", "env/"]
     for file in files:
         full_path = str(file)
@@ -185,7 +189,7 @@ def skip_virtual_envs(files: Generator[Path, None, None]):
             yield file
 
 
-def skip_cache(files: Generator[Path, None, None]):
+def skip_cache(files: Generator[Path, None, None]) -> Generator[Path, None, None]:
     caches = ["__pycache__/", ".mypy_cache/", ".pytest_cache/", ".ruff_cache/"]
     for file in files:
         full_path = str(file)
@@ -193,7 +197,7 @@ def skip_cache(files: Generator[Path, None, None]):
             yield file
 
 
-def skip_git(files: Generator[Path, None, None]):
+def skip_git(files: Generator[Path, None, None]) -> Generator[Path, None, None]:
     for file in files:
         full_path = str(file)
         if ".git" not in full_path:
@@ -201,7 +205,9 @@ def skip_git(files: Generator[Path, None, None]):
 
 
 def get_working_files(
-    directory: str, gitignore: str, custom_matches: Collection = []
+    directory: str,
+    custom_matches: Collection[str] | None = None,
+    gitignore_path: str = ".gitignore",
 ) -> Generator[Path, None, None]:
     """Parent generator for getting a final list of files to traverse
 
@@ -223,7 +229,7 @@ def get_working_files(
         skip_cache(
             skip_virtual_envs(
                 filter_by_custom_matches(
-                    filter_python_files(filter_by_gitignore(files, gitignore)),
+                    filter_python_files(filter_by_gitignore(files, gitignore_path)),
                     custom_matches,
                 )
             )
