@@ -121,7 +121,7 @@ def get_working_files(
         skip_cache(
             skip_virtual_envs(
                 filter_by_custom_matches(
-                    filter_python_files(filter_by_gitignore(files, gitignore_path)),
+                    filter_by_gitignore(filter_python_files(files), gitignore_path),
                     custom_matches,
                 )
             )
