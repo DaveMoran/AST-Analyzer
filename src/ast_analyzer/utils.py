@@ -163,13 +163,22 @@ def skip_cache(files):
             yield file
 
 
+def skip_git(files):
+    for file in files:
+        full_path = str(file.resolve())
+        if ".git" not in full_path:
+            yield file
+
+
 def get_working_files(directory):
     files = read_from_directory(directory)
 
-    filtered_files = skip_cache(
-        skip_virtual_envs(
-            filter_by_permission(
-                filter_python_files(filter_by_gitignore(files, ".gitignore"))
+    filtered_files = skip_git(
+        skip_cache(
+            skip_virtual_envs(
+                filter_by_permission(
+                    filter_python_files(filter_by_gitignore(files, ".gitignore"))
+                )
             )
         )
     )
