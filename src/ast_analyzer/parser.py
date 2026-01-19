@@ -5,10 +5,23 @@ Traverse the project and transform the data into a readable format for the analz
 """
 
 
-def parser():
-    return "parser"
+class Parser:
+    def __init__(self, filename):
+        self.filename = filename
+        self.file = None
+
+    def __enter__(self):
+        self.file = open(self.filename)
+        return self.file
+
+    def __exit__(self):
+        if self.file:
+            self.file.close()
+
+        return False
 
 
+# TODO - Move this to classes/AnalysisResult in follow up chore
 class AnalysisResult:
     """
     Takes all of the findings from the CodeAnalyzer class and generates a report
