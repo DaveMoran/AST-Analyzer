@@ -123,9 +123,7 @@ def read_lines(filepath):
 
 def filter_python_files(files):
     for file in files:
-        file_extension = file.suffix
-        if file_extension == ".py":
-            yield file
+        yield file
 
 
 def filter_by_gitignore(files, ignore_file):
@@ -157,12 +155,22 @@ def skip_virtual_envs(files):
             yield file
 
 
+def skip_cache(files):
+    caches = ["__pycache__/", ".mypy_cache/"]
+    for file in files:
+        full_path = str(file.resolve())
+        if not any(cache in full_path for cache in caches):
+            yield file
+
+
 def get_working_files(directory):
     files = read_from_directory(directory)
 
-    filtered_files = skip_virtual_envs(
-        filter_by_permission(
-            filter_python_files(filter_by_gitignore(files, ".gitignore"))
+    filtered_files = skip_cache(
+        skip_virtual_envs(
+            filter_by_permission(
+                filter_python_files(filter_by_gitignore(files, ".gitignore"))
+            )
         )
     )
 
