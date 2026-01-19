@@ -7,6 +7,7 @@ A list of helper functions that can be reused throughout the application
 import fnmatch
 import logging
 import os
+import pathspec
 
 from pathlib import Path
 from typing import Generator, Collection
@@ -42,47 +43,18 @@ def filter_python_files(
 
 
 def filter_by_gitignore(files: Generator[Path, None, None], ignore_file: str):
-    patterns = []
+    gitignore_path = Path(ignore_file)
 
-    try:
-        with open(ignore_file, "r") as f:
-            gen_gitignore = f.readlines()
-
-        for line in gen_gitignore:
-            pattern = line.strip()
-            if pattern and not pattern.startswith("#"):
-                patterns.append(pattern)
-
-    except (FileNotFoundError, PermissionError):
-        # No .gitignore or can't read it - yield all files
-        logging.warning(f"Could not read {ignore_file}, skipping gitignore filtering")
+    if not gitignore_path.exists():
+        logging.warning("No gitignore file found. Returning all files")
         yield from files
         return
 
+    lines = gitignore_path.read_text().splitlines()
+    spec = pathspec.GitIgnoreSpec.from_lines(lines)
+
     for file in files:
-        is_match = False
-        relative_path = str(file)
-
-        for pattern in patterns:
-            # Handle directory patterns (ending with /)
-            if pattern.endswith("/"):
-                # Check if any part of the path contains this directory
-                if (
-                    pattern[:-1] in relative_path
-                    or f"/{pattern[:-1]}/" in relative_path
-                ):
-                    is_match = True
-                    break
-            # Match against filename
-            elif fnmatch.fnmatch(file.name, pattern):
-                is_match = True
-                break
-            # Match against full relative path for patterns with /
-            elif "/" in pattern and fnmatch.fnmatch(relative_path, pattern):
-                is_match = True
-                break
-
-        if not is_match:
+        if not spec.match_file(str(file)):
             yield file
 
 
