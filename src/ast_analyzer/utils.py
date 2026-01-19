@@ -131,18 +131,21 @@ def filter_python_files(files: Generator[Path, None, None]):
 
 
 def filter_by_gitignore(files: Generator[Path, None, None], ignore_file: str):
-    with open(ignore_file, "r") as file:
-        gen_gitignore = file.readlines()
+    try:
+        with open(ignore_file, "r") as f:
+            gen_gitignore = f.readlines()
 
-    for file in files:
-        is_match = False
-        for ignore_case in gen_gitignore:
-            ignore_case = ignore_case.strip()
-            if fnmatch.fnmatch(file.name, ignore_case):
-                is_match = True
+        for file in files:
+            is_match = False
+            for ignore_case in gen_gitignore:
+                ignore_case = ignore_case.strip()
+                if fnmatch.fnmatch(file.name, ignore_case):
+                    is_match = True
 
-        if not is_match:
-            yield file
+            if not is_match:
+                yield file
+    except FileNotFoundError:
+        logging.exception("File not found")
 
 
 def filter_by_custom_matches(files: Generator[Path, None, None], matches: Collection):
@@ -176,7 +179,7 @@ def skip_git(files: Generator[Path, None, None]):
 
 
 def get_working_files(
-    directory: str, custom_matches: Collection = []
+    directory: str, gitignore: str, custom_matches: Collection = []
 ) -> Generator[Path, None, None]:
     """Parent generator for getting a final list of files to traverse
 
@@ -198,7 +201,7 @@ def get_working_files(
         skip_cache(
             skip_virtual_envs(
                 filter_by_custom_matches(
-                    filter_python_files(filter_by_gitignore(files, ".gitignore")),
+                    filter_python_files(filter_by_gitignore(files, gitignore)),
                     custom_matches,
                 )
             )
