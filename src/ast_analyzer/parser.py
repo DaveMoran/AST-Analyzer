@@ -8,6 +8,15 @@ import logging
 
 
 class Parser:
+    """Context manager for the AST Node parser to handle individual files
+
+    Args:
+        filename: Name of the file that you'll be parsing
+
+    Example:
+        >>> file_parser = Parser('./src/ast_analyzer/parser.py')
+    """
+
     def __init__(self, filename):
         self.filename = filename
         self.file = None
