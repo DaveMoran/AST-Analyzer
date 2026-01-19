@@ -129,9 +129,11 @@ def filter_python_files(files: Generator[Path, None, None]):
 
 
 def filter_by_gitignore(files: Generator[Path, None, None], ignore_file: str):
+    with open(ignore_file, "r") as file:
+        gen_gitignore = file.readlines()
+
     for file in files:
         is_match = False
-        gen_gitignore = read_lines(ignore_file)
         for ignore_case in gen_gitignore:
             ignore_case = ignore_case.strip()
             if fnmatch.fnmatch(file.name, ignore_case):
