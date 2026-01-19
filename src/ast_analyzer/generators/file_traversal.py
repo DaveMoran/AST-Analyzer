@@ -13,12 +13,17 @@ from typing import Generator, Collection
 
 
 def read_from_directory(directory: str) -> Generator[Path, None, None]:
-    filenames = (
-        file_path
-        for file_path in Path(directory).rglob("*")
-        if os.access(str(file_path), os.R_OK) and file_path.is_file()
-    )
-    return filenames
+    try:
+        filenames = (
+            file_path
+            for file_path in Path(directory).rglob("*", followlinks=False)
+            if os.access(str(file_path), os.R_OK) and file_path.is_file()
+        )
+        return filenames
+    except:
+        logging.exception(
+            "Warning, you do not have permission to view one of these files "
+        )
 
 
 def read_lines(filepath: Path) -> Generator[str, None, None]:
@@ -62,7 +67,10 @@ def filter_by_gitignore(files: Generator[Path, None, None], ignore_file: str):
             # Handle directory patterns (ending with /)
             if pattern.endswith("/"):
                 # Check if any part of the path contains this directory
-                if pattern[:-1] in relative_path or f"/{pattern[:-1]}/" in relative_path:
+                if (
+                    pattern[:-1] in relative_path
+                    or f"/{pattern[:-1]}/" in relative_path
+                ):
                     is_match = True
                     break
             # Match against filename
