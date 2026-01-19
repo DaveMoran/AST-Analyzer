@@ -6,8 +6,10 @@ A list of helper functions that can be reused throughout the application
 
 import functools
 import logging
+import re
 import time
 
+from pathlib import Path
 from typing import Callable, Any, Optional
 
 DEFAULT_FMT = "[{curr_time} | {time_taken:0.2f}s] {fn_name}({args}) -> {result}"
@@ -105,16 +107,18 @@ class ast_log:
         return wrapper
 
 
-import re
+def read_from_directory(directory):
+    filenames = [p.name for p in Path(directory).iterdir() if p.is_file()]
+    return filenames
+
+
+print(read_from_directory("."))
 
 
 def read_lines(filepath):
     with open(filepath) as f:
         for line in f:
             yield line
-
-
-ft = read_lines("./test.md")
 
 
 def lines_starting_with_vowel(lines):
@@ -138,9 +142,3 @@ def lines_with_numbers_extracted(lines):
     for line in lines:
         numbers = re.findall(r"\d+", line)
         yield numbers
-
-
-result = lines_with_numbers_extracted(ft)
-
-for item in result:
-    print(item)
