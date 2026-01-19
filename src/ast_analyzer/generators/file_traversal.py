@@ -14,15 +14,16 @@ from typing import Generator, Collection
 
 def read_from_directory(directory: str) -> Generator[Path, None, None]:
     dir_path = Path(directory)
-    if dir_path.is_dir():
-        for file_path in dir_path.rglob("*"):
-            try:
-                if os.access(str(file_path), os.R_OK) and file_path.is_file():
-                    yield file_path
-            except PermissionError:
-                logging.warning(f"Permission denied: {file_path}")
-    else:
+    if not dir_path.is_dir():
         logging.error(f"Directory {dir_path} is not a valid directory")
+        return
+
+    for file_path in dir_path.rglob("*"):
+        try:
+            if file_path.is_file() and os.access(file_path, os.R_OK):
+                yield file_path
+        except (PermissionError, OSError) as e:
+            logging.warning(f"Cannot access {file_path}: {e}")
 
 
 def read_lines(filepath: Path) -> Generator[str, None, None]:
