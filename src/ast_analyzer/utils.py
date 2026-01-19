@@ -118,9 +118,20 @@ def read_lines(filepath):
             yield line
 
 
-files = read_from_directory(".")
+files = read_from_directory("src/ast_analyzer/")
 
-print(files)
+
+def filter_python_files(files):
+    for file in files:
+        file_extension = file.split(".")[-1]
+        if file_extension == "py":
+            yield file
+
+
+python_files = filter_python_files(files)
+
+for file in python_files:
+    print(file)
 
 
 def lines_starting_with_vowel(lines):
