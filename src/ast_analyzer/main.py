@@ -4,6 +4,8 @@ ast_analyzer.main
 Entry point for the AST Analyzer application
 """
 
+import logging
+
 from ast_analyzer.generators.file_traversal import get_working_files
 from ast_analyzer.parser import Parser
 
@@ -23,7 +25,7 @@ def main():
                 content = f.read()
                 print(content)
         except FileNotFoundError:
-            print("File not found")
+            logging.exception(f"File not found: {file}")
 
     # Step 5: Create an AST Node of each file
     # Step 6: Run the nodes through our analysis
