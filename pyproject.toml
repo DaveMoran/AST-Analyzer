@@ -37,6 +37,7 @@ classifiers = [
 # ---- Main dependencies ----
 
 dependencies = [
+    "pathspec>=0.12.1",
 ]
 
 

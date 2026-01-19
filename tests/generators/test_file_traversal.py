@@ -155,7 +155,47 @@ class TestFilterByGitignore:
         result = list(filter_by_gitignore(iter(files), str(tmp_path / "nonexistent")))
 
         assert len(result) == 2
-        assert "Could not read" in caplog.text
+        assert "No gitignore file found" in caplog.text
+
+    def test_works_with_relative_paths(self, tmp_path):
+        """Verify pathspec matching works correctly with relative paths."""
+        gitignore = tmp_path / ".gitignore"
+        gitignore.write_text("*.pyc\n__pycache__/\nnode_modules/\n")
+
+        # Relative paths (as would come from rglob with a relative base)
+        files = [
+            Path("src/main.py"),
+            Path("src/__pycache__/main.cpython-312.pyc"),
+            Path("node_modules/package/index.js"),
+            Path("tests/test_main.py"),
+        ]
+
+        result = list(filter_by_gitignore(iter(files), str(gitignore)))
+
+        assert Path("src/main.py") in result
+        assert Path("tests/test_main.py") in result
+        assert Path("src/__pycache__/main.cpython-312.pyc") not in result
+        assert Path("node_modules/package/index.js") not in result
+
+    def test_works_with_absolute_paths(self, tmp_path):
+        """Verify pathspec matching works with absolute paths."""
+        gitignore = tmp_path / ".gitignore"
+        gitignore.write_text("*.pyc\n__pycache__/\n")
+
+        # Absolute paths (as would come from rglob with an absolute base)
+        files = [
+            tmp_path / "src" / "main.py",
+            tmp_path / "src" / "__pycache__" / "main.cpython-312.pyc",
+            tmp_path / "tests" / "test_main.py",
+        ]
+
+        result = list(filter_by_gitignore(iter(files), str(gitignore)))
+        result_names = [f.name for f in result]
+
+        assert "main.py" in result_names
+        assert "test_main.py" in result_names
+        # This checks if pathspec handles absolute paths correctly
+        assert "main.cpython-312.pyc" not in result_names
 
 
 class TestFilterByCustomMatches:

@@ -5,6 +5,9 @@ requires-python = ">=3.12, <4.0"
 [[package]]
 name = "ast-analyzer"
 source = { editable = "." }
+dependencies = [
+    { name = "pathspec" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -15,6 +18,7 @@ dev = [
 ]
 
 [package.metadata]
+requires-dist = [{ name = "pathspec", specifier = ">=0.12.1" }]
 
 [package.metadata.requires-dev]
 dev = [
