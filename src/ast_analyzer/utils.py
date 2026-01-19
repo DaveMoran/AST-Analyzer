@@ -62,10 +62,7 @@ def filter_by_gitignore(files: Generator[Path, None, None], ignore_file: str):
             # Handle directory patterns (ending with /)
             if pattern.endswith("/"):
                 # Check if any part of the path contains this directory
-                if (
-                    pattern[:-1] in relative_path
-                    or f"/{pattern[:-1]}/" in relative_path
-                ):
+                if pattern[:-1] in relative_path or f"/{pattern[:-1]}/" in relative_path:
                     is_match = True
                     break
             # Match against filename
@@ -82,8 +79,12 @@ def filter_by_gitignore(files: Generator[Path, None, None], ignore_file: str):
 
 
 def filter_by_custom_matches(
-    files: Generator[Path, None, None], matches: Collection
+    files: Generator[Path, None, None], matches: Collection[str] | None
 ) -> Generator[Path, None, None]:
+    if not matches:
+        yield from files
+        return
+
     for file in files:
         full_path = str(file)
         if not any(match in full_path for match in matches):

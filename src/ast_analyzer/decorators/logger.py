@@ -25,9 +25,7 @@ class logger:
         ...     pass
     """
 
-    def __init__(
-        self, level: int, name: Optional[str] = None, message: Optional[str] = None
-    ):
+    def __init__(self, level: int, name: Optional[str] = None, message: Optional[str] = None):
         self.level = level
         self.logname = name
         self.logmsg = message
@@ -49,9 +47,7 @@ class logger:
                 )
                 raise
             else:
-                self.log.log(
-                    self.level, f"Function {self.logname} Complete. Result: {result}"
-                )
+                self.log.log(self.level, f"Function {self.logname} Complete. Result: {result}")
                 return result
 
         return wrapper

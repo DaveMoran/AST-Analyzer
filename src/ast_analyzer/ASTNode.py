@@ -3,7 +3,7 @@ ASTNode Class file
 """
 
 import ast
-from typing import Optional
+from typing import Optional, Any
 
 
 class ASTNode:
@@ -23,7 +23,7 @@ class ASTNode:
         self.node = node
         self.parent = parent
         self.children = []
-        self.metadata = {}
+        self.metadata: dict[Any, Any] = {}
 
         for child in ast.iter_child_nodes(self.node):
             self.children.append(ASTNode(child, self))

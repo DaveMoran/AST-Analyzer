@@ -15,7 +15,7 @@ class timer:
         functools.wraps(fn)(self)
         self.fn = fn
         self.fmt = fmt
-        self.accumulated_time = 0
+        self.accumulated_time = 0.0
         self.times_called = 0
 
     def __call__(self, *args: Any, **kwargs: Any):
@@ -33,11 +33,19 @@ class timer:
 
         # Populate logger variables
         fn_name = self.fn.__name__
-        args = ", ".join(repr(arg) for arg in args)
+        args_str = ", ".join(repr(arg) for arg in args)
         result = repr(_result)
 
         # Print timing
-        print(self.fmt.format(**locals()))
+        print(
+            self.fmt.format(
+                curr_time=curr_time,
+                time_taken=time_taken,
+                fn_name=fn_name,
+                args=args_str,
+                result=result,
+            )
+        )
         if time_taken > 0.5:
             print(f"{'-' * 20} WARNING: Function took longer than 0.5s {'-' * 20}")
         return _result
