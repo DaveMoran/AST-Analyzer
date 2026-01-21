@@ -67,3 +67,23 @@ class TestASTNodeRepr:
         node = ASTNode(simple_ast_tree)
         child = node.children[0]
         assert repr(child) == "ASTNode(Assign)"
+
+
+@pytest.mark.astnode
+class TestASTNodeStr:
+    """Tests for ASTNode.__str__"""
+
+    @pytest.mark.parametrize(
+        "code,expected_count",
+        [
+            ("", 0),
+            ("x = 1", 1),
+            ("x = 1\ny = 2", 2),
+            ("x = 1\ny = 2\nz = 3", 3),
+        ],
+    )
+    def test_str_shows_children_count(self, code, expected_count):
+        """__str__ displays the number of children."""
+        tree = ast.parse(code)
+        node = ASTNode(tree)
+        assert str(node) == f"AST Node | Children: {expected_count}"
