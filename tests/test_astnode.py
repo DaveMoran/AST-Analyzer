@@ -87,3 +87,21 @@ class TestASTNodeStr:
         tree = ast.parse(code)
         node = ASTNode(tree)
         assert str(node) == f"AST Node | Children: {expected_count}"
+
+
+@pytest.mark.astnode
+class TestASTNodeLen:
+    """Tests for ASTNode.__len__"""
+
+    def test_len_empty_module(self, empty_ast_node):
+        """Empty module has zero children."""
+        assert len(empty_ast_node) == 0
+
+    def test_len_single_child(self, ast_node):
+        """Simple assignment has one child."""
+        assert len(ast_node) == 1
+
+    def test_len_multiple_children(self, complex_ast_node):
+        """Complex module has multiple children."""
+        # def greet, class Calculator, x = 1, y = 2
+        assert len(complex_ast_node) == 2
