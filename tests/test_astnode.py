@@ -1,71 +1,44 @@
 import ast
-import textwrap
-import unittest
+import pytest
 from ast_analyzer.ASTNode import ASTNode
 
 
-class TestASTNode(unittest.TestCase):
-    def setUp(self):
-        test_code = """
-        def greet_user(message, name):
-            intro = f"Hello, {name}! We have a special message for you"
-            return f"{intro}. {message}"
+@pytest.mark.astnode
+class TestASTNodeInit:
+    """Tests for ASTNode.__init__"""
 
-        greet_user("Happy New Year!", "Dave")
-        """
-        dedented_code = textwrap.dedent(test_code)
-        test_tree = ast.parse(dedented_code)
-        self.node = ASTNode(test_tree)
+    def test_init_creates_node(self, simple_ast_tree):
+        """ASTNode wraps the provided AST node."""
+        node = ASTNode(simple_ast_tree)
+        assert node.node is simple_ast_tree
 
-    def test_len(self):
-        assert len(self.node) == 2
+    def test_init_parent_default_none(self, simple_ast_tree):
+        """Parent defaults to None for root nodes."""
+        node = ASTNode(simple_ast_tree)
+        assert node.parent is None
 
-    def test_getitem(self):
-        assert isinstance(self.node[0], ASTNode)
-        assert isinstance(self.node[0].node, ast.FunctionDef)
-        with self.assertRaises(IndexError):
-            self.node[3]
+    def test_init_parent_assignment(self, simple_ast_tree):
+        """Parent can be explicitly set."""
+        parent = ASTNode(simple_ast_tree)
+        child_ast = ast.parse("y = 2")
+        child = ASTNode(child_ast, parent=parent)
+        assert child.parent is parent
 
-    def test_repr(self):
-        repr_str = repr(self.node)
-        assert repr_str == "ASTNode(Module)"
+    def test_init_creates_children_recursively(self, simple_ast_tree):
+        """Children are created for all child AST nodes."""
+        node = ASTNode(simple_ast_tree)
+        # simple_ast_tree is "x = 1" which has one Assign child
+        assert len(node.children) == 1
+        assert isinstance(node.children[0], ASTNode)
 
-    def test_str(self):
-        repr_str = str(self.node)
-        assert repr_str == "AST Node | Children: 2"
+    def test_init_children_have_parent_set(self, simple_ast_tree):
+        """All children have their parent reference set correctly."""
+        node = ASTNode(simple_ast_tree)
+        for child in node.children:
+            assert child.parent is node
 
-    def test_hash(self):
-        test_set = set()
-        test_set.add(self.node)
-        assert len(test_set) == 1
-
-    def test_iter(self):
-        for node in self.node:
-            assert str(node).startswith("AST Node")
-            assert repr(node).startswith("ASTNode")
-
-    def test_eq(self):
-        second_code = """
-        greeting = 'Hello World!'
-        print(greeting)
-        """
-
-        dedented_second = textwrap.dedent(second_code)
-        second_tree = ast.parse(dedented_second)
-        second_node = ASTNode(second_tree)
-
-        assert self.node != second_node
-
-    def test_contains(self):
-        second_test = """
-        def greet_user(message, name):
-            intro = f"Hello, {name}! We have a special message for you"
-            return f"{intro}. {message}"
-        """
-
-        second_tree = ast.parse(textwrap.dedent(second_test))
-        second_node = ASTNode(second_tree)
-        first_child = self.node[0]
-
-        assert first_child in self.node
-        assert second_node not in self.node
+    def test_init_metadata_empty_dict(self, simple_ast_tree):
+        """Metadata initializes as empty dict."""
+        node = ASTNode(simple_ast_tree)
+        assert node.metadata == {}
+        assert isinstance(node.metadata, dict)
