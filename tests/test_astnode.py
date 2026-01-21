@@ -153,3 +153,60 @@ class TestASTNodeIter:
             assert isinstance(child, ASTNode)
             count += 1
         assert count == len(ast_node)
+
+
+@pytest.mark.astnode
+class TestASTNodeContains:
+    """Tests for ASTNode.__contains__"""
+
+    def test_contains_child_present(self, ast_node):
+        """Child that exists returns True."""
+        child = ast_node.children[0]
+        assert child in ast_node
+
+    def test_contains_child_absent(self, ast_node, empty_ast_node):
+        """Child from different tree returns False."""
+        assert empty_ast_node not in ast_node
+
+    def test_contains_non_astnode_raises_attribute_error(self, ast_node):
+        """Non-ASTNode item raises AttributeError due to __eq__ implementation.
+
+        Note: The current implementation compares via __eq__ which accesses
+        other.node, causing AttributeError for non-ASTNode items.
+        """
+        with pytest.raises(AttributeError):
+            _ = "not a node" in ast_node
+        with pytest.raises(AttributeError):
+            _ = 42 in ast_node
+        with pytest.raises(AttributeError):
+            _ = None in ast_node
+
+
+@pytest.mark.astnode
+class TestASTNodeEq:
+    """Tests for ASTNode.__eq__"""
+
+    def test_eq_same_underlying_node(self, simple_ast_tree):
+        """Two ASTNodes wrapping same AST node are equal."""
+        node1 = ASTNode(simple_ast_tree)
+        node2 = ASTNode(simple_ast_tree)
+        assert node1 == node2
+
+    def test_eq_different_underlying_nodes(self, simple_ast_tree, complex_ast_tree):
+        """ASTNodes wrapping different AST nodes are not equal."""
+        node1 = ASTNode(simple_ast_tree)
+        node2 = ASTNode(complex_ast_tree)
+        assert node1 != node2
+
+    def test_eq_non_astnode_raises_attribute_error(self, ast_node):
+        """Comparing to non-ASTNode raises AttributeError.
+
+        Note: Current implementation accesses other.node without type checking,
+        causing AttributeError for non-ASTNode comparisons.
+        """
+        with pytest.raises(AttributeError):
+            _ = ast_node == "not a node"
+        with pytest.raises(AttributeError):
+            _ = ast_node == 42
+        with pytest.raises(AttributeError):
+            _ = ast_node == None
