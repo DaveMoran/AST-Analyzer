@@ -210,3 +210,24 @@ class TestASTNodeEq:
             _ = ast_node == 42
         with pytest.raises(AttributeError):
             _ = ast_node == None
+
+
+@pytest.mark.astnode
+class TestASTNodeHash:
+    """Tests for ASTNode.__hash__"""
+
+    def test_hash_is_hashable(self, ast_node):
+        """ASTNode is hashable."""
+        h = hash(ast_node)
+        assert isinstance(h, int)
+
+    def test_hash_usable_in_set(self, ast_node, complex_ast_node):
+        """ASTNodes can be used in sets."""
+        node_set = {ast_node, complex_ast_node}
+        assert len(node_set) == 2
+        assert ast_node in node_set
+
+    def test_hash_usable_as_dict_key(self, ast_node):
+        """ASTNodes can be used as dictionary keys."""
+        d = {ast_node: "test_value"}
+        assert d[ast_node] == "test_value"
