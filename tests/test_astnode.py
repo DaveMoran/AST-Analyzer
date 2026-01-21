@@ -42,3 +42,28 @@ class TestASTNodeInit:
         node = ASTNode(simple_ast_tree)
         assert node.metadata == {}
         assert isinstance(node.metadata, dict)
+
+
+@pytest.mark.astnode
+class TestASTNodeRepr:
+    """Tests for ASTNode.__repr__"""
+
+    @pytest.mark.parametrize(
+        "code,expected_type",
+        [
+            ("x = 1", "Module"),
+            ("def foo(): pass", "Module"),
+            ("class Bar: pass", "Module"),
+        ],
+    )
+    def test_repr_format(self, code, expected_type):
+        """__repr__ returns ASTNode({node_type})."""
+        tree = ast.parse(code)
+        node = ASTNode(tree)
+        assert repr(node) == f"ASTNode({expected_type})"
+
+    def test_repr_child_node_type(self, simple_ast_tree):
+        """Child nodes show their specific type."""
+        node = ASTNode(simple_ast_tree)
+        child = node.children[0]
+        assert repr(child) == "ASTNode(Assign)"
