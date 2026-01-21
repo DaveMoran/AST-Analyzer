@@ -105,3 +105,51 @@ class TestASTNodeLen:
         """Complex module has multiple children."""
         # def greet, class Calculator, x = 1, y = 2
         assert len(complex_ast_node) == 2
+
+
+@pytest.mark.astnode
+class TestASTNodeGetitem:
+    """Tests for ASTNode.__getitem__"""
+
+    def test_getitem_valid_index(self, ast_node):
+        """Valid index returns the child ASTNode."""
+        child = ast_node[0]
+        assert isinstance(child, ASTNode)
+
+    def test_getitem_negative_index(self, complex_ast_node):
+        """Negative index returns from end."""
+        last_child = complex_ast_node[-1]
+        assert last_child is complex_ast_node.children[-1]
+
+    def test_getitem_index_error(self, ast_node):
+        """Out of range index raises IndexError."""
+        with pytest.raises(IndexError):
+            _ = ast_node[100]
+
+    def test_getitem_empty_node_raises(self, empty_ast_node):
+        """Indexing empty node raises IndexError."""
+        with pytest.raises(IndexError):
+            _ = empty_ast_node[0]
+
+
+@pytest.mark.astnode
+class TestASTNodeIter:
+    """Tests for ASTNode.__iter__"""
+
+    def test_iter_yields_children(self, complex_ast_node):
+        """Iterating yields all children in order."""
+        children_via_iter = list(complex_ast_node)
+        assert children_via_iter == complex_ast_node.children
+
+    def test_iter_empty_node(self, empty_ast_node):
+        """Iterating empty node yields nothing."""
+        children = list(empty_ast_node)
+        assert children == []
+
+    def test_iter_in_for_loop(self, ast_node):
+        """Can use ASTNode in for loop."""
+        count = 0
+        for child in ast_node:
+            assert isinstance(child, ASTNode)
+            count += 1
+        assert count == len(ast_node)

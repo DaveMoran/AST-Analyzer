@@ -5,6 +5,11 @@ import pytest
 from ast_analyzer.ASTNode import ASTNode
 
 
+def pytest_configure(config):
+    """Register custom markers."""
+    config.addinivalue_line("markers", "astnode: tests for ASTNode class")
+
+
 @pytest.fixture
 def simple_ast_tree():
     """Parse a simple assignment statement into an AST."""
