@@ -105,7 +105,22 @@ class TestAnalysisResultGetitem:
 class TestAnalysisResultAdd:
     """Tests for AnalysisResult.__add__"""
 
-    def test_add_raises_not_implemented(self, empty_analysis_result, populated_analysis_result):
-        """__add__ raises NotImplementedError (ASTANA-6 work)."""
-        with pytest.raises(NotImplementedError):
-            _ = empty_analysis_result + populated_analysis_result
+    def test_add_combines_results(self, empty_analysis_result, populated_analysis_result):
+        """__add__ combines findings from both results."""
+        combined = empty_analysis_result + populated_analysis_result
+        assert len(combined) == 3
+
+    def test_add_creates_new_instance(self, populated_analysis_result):
+        """__add__ returns a new AnalysisResult, not modifying originals."""
+        from ast_analyzer.classes.AnalysisResult import AnalysisResult
+        other = AnalysisResult()
+        other.results.append({"type": "warning", "message": "new warning"})
+        combined = populated_analysis_result + other
+        assert len(combined) == 4
+        assert len(populated_analysis_result) == 3  # original unchanged
+        assert len(other) == 1  # original unchanged
+
+    def test_add_invalid_type_returns_not_implemented(self, empty_analysis_result):
+        """__add__ returns NotImplemented for non-AnalysisResult types."""
+        result = empty_analysis_result.__add__("not an AnalysisResult")
+        assert result is NotImplemented
