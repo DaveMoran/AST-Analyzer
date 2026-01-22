@@ -100,6 +100,51 @@ class TestAnalysisResultGetitem:
         with pytest.raises(IndexError):
             _ = empty_analysis_result[0]
 
+    def test_getitem_by_type_string(self, populated_analysis_result):
+        """String key returns all findings of that type."""
+        warnings = populated_analysis_result["warning"]
+        assert len(warnings) == 1
+        assert warnings[0]["message"] == "Too many functions"
+
+    def test_getitem_by_type_returns_list(self, populated_analysis_result):
+        """String key returns a list even for single match."""
+        errors = populated_analysis_result["error"]
+        assert isinstance(errors, list)
+        assert len(errors) == 1
+
+    def test_getitem_by_type_key_error(self, populated_analysis_result):
+        """String key with no matches raises KeyError."""
+        with pytest.raises(KeyError):
+            _ = populated_analysis_result["nonexistent"]
+
+    def test_getitem_invalid_type_raises(self, populated_analysis_result):
+        """Non-int, non-str key raises TypeError."""
+        with pytest.raises(TypeError):
+            _ = populated_analysis_result[3.14]
+
+
+@pytest.mark.analysis_result
+class TestAnalysisResultIter:
+    """Tests for AnalysisResult.__iter__"""
+
+    def test_iter_empty(self, empty_analysis_result):
+        """Iterating over empty results yields nothing."""
+        items = list(empty_analysis_result)
+        assert items == []
+
+    def test_iter_populated(self, populated_analysis_result):
+        """Iterating yields each finding in order."""
+        items = list(populated_analysis_result)
+        assert len(items) == 3
+        assert items[0]["type"] == "warning"
+        assert items[1]["type"] == "error"
+        assert items[2]["type"] == "info"
+
+    def test_iter_in_for_loop(self, populated_analysis_result):
+        """Can use in for loop."""
+        types = [item["type"] for item in populated_analysis_result]
+        assert types == ["warning", "error", "info"]
+
 
 @pytest.mark.analysis_result
 class TestAnalysisResultAdd:
