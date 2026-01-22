@@ -3,7 +3,6 @@ tests.test_parser
 """
 
 import ast
-import tempfile
 import os
 
 import pytest
@@ -153,3 +152,85 @@ class TestParserASTIntegration:
             content = f.read()
             with pytest.raises(SyntaxError):
                 ast.parse(content)
+
+
+@pytest.mark.parser
+class TestParserEnter:
+    """Tests for Parser.__enter__"""
+
+    def test_enter_opens_file(self, sample_code_file):
+        """__enter__ opens the file and returns file object."""
+        filepath = sample_code_file("x = 1")
+        with Parser(filepath) as f:
+            assert f is not None
+            assert not f.closed
+
+    def test_enter_file_readable(self, sample_code_file):
+        """Opened file can be read."""
+        filepath = sample_code_file("x = 1\ny = 2")
+        with Parser(filepath) as f:
+            content = f.read()
+            assert "x = 1" in content
+
+
+@pytest.mark.parser
+class TestParserExit:
+    """Tests for Parser.__exit__"""
+
+    def test_exit_closes_file(self, sample_code_file):
+        """__exit__ closes the file."""
+        filepath = sample_code_file("test content")
+        parser = Parser(filepath)
+        f = parser.__enter__()
+        assert not f.closed
+        parser.__exit__(None, None, None)
+        assert f.closed
+
+    def test_exit_returns_false(self, sample_code_file):
+        """__exit__ returns False (doesn't suppress exceptions)."""
+        filepath = sample_code_file("test")
+        parser = Parser(filepath)
+        parser.__enter__()
+        result = parser.__exit__(None, None, None)
+        assert result is False
+
+    def test_exit_with_exception(self, sample_code_file):
+        """__exit__ handles exceptions and still closes file."""
+        filepath = sample_code_file("test")
+        parser = Parser(filepath)
+        f = parser.__enter__()
+        # Simulate an exception occurring
+        result = parser.__exit__(ValueError, ValueError("test error"), None)
+        assert f.closed
+        assert result is False  # Exception not suppressed
+
+
+@pytest.mark.parser
+class TestParserContextManager:
+    """Integration tests for Parser as context manager."""
+
+    def test_context_manager_usage(self, sample_code_file):
+        """Parser works correctly as context manager."""
+        filepath = sample_code_file("print('hello')")
+        file_ref = None
+        with Parser(filepath) as f:
+            file_ref = f
+            assert not f.closed
+        assert file_ref.closed
+
+    def test_context_manager_with_exception(self, sample_code_file):
+        """File is closed even when exception occurs."""
+        filepath = sample_code_file("content")
+        file_ref = None
+        with pytest.raises(ValueError):
+            with Parser(filepath) as f:
+                file_ref = f
+                raise ValueError("test error")
+        assert file_ref.closed
+
+    def test_nonexistent_file_raises(self, tmp_path):
+        """Opening nonexistent file raises FileNotFoundError."""
+        nonexistent = str(tmp_path / "does_not_exist.py")
+        with pytest.raises(FileNotFoundError):
+            with Parser(nonexistent) as f:
+                pass
