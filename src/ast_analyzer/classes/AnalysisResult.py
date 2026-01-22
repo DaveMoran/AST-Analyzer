@@ -20,8 +20,9 @@ class AnalysisResult:
         Too many functions
     """
 
-    def __init__(self):
-        self.results = []
+    def __init__(self) -> None:
+        """Initialize an empty AnalysisResult with no findings."""
+        self.results: list[dict[str, Any]] = []
 
     def __repr__(self):
         return f"AnalysisResult(results={self.results})"
