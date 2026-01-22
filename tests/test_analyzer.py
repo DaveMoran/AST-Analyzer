@@ -47,7 +47,9 @@ class TestAnalysisResultStr:
 
     def test_str_populated(self, populated_analysis_result):
         """__str__ shows count of changes for populated results."""
-        assert str(populated_analysis_result) == "Analysis Complete! There are 3 changes to implement"
+        assert (
+            str(populated_analysis_result) == "Analysis Complete! There are 3 changes to implement"
+        )
 
 
 @pytest.mark.analysis_result
@@ -158,6 +160,7 @@ class TestAnalysisResultAdd:
     def test_add_creates_new_instance(self, populated_analysis_result):
         """__add__ returns a new AnalysisResult, not modifying originals."""
         from ast_analyzer.classes.AnalysisResult import AnalysisResult
+
         other = AnalysisResult()
         other.results.append({"type": "warning", "message": "new warning"})
         combined = populated_analysis_result + other
