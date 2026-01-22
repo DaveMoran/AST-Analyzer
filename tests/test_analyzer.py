@@ -41,19 +41,13 @@ class TestAnalysisResultRepr:
 class TestAnalysisResultStr:
     """Tests for AnalysisResult.__str__"""
 
-    def test_str_raises_not_implemented(self, empty_analysis_result):
-        """__str__ raises NotImplementedError because it calls __len__.
+    def test_str_empty(self, empty_analysis_result):
+        """__str__ shows 0 changes for empty results."""
+        assert str(empty_analysis_result) == "Analysis Complete! There are 0 changes to implement"
 
-        Note: __str__ uses len(self) internally, which raises NotImplementedError.
-        This is expected behavior until ASTANA-6 implements __len__.
-        """
-        with pytest.raises(NotImplementedError):
-            str(empty_analysis_result)
-
-    def test_str_raises_with_populated_results(self, populated_analysis_result):
-        """__str__ raises NotImplementedError even with results."""
-        with pytest.raises(NotImplementedError):
-            str(populated_analysis_result)
+    def test_str_populated(self, populated_analysis_result):
+        """__str__ shows count of changes for populated results."""
+        assert str(populated_analysis_result) == "Analysis Complete! There are 3 changes to implement"
 
 
 @pytest.mark.analysis_result
