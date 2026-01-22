@@ -54,10 +54,13 @@ class TestAnalysisResultStr:
 class TestAnalysisResultLen:
     """Tests for AnalysisResult.__len__"""
 
-    def test_len_raises_not_implemented(self, empty_analysis_result):
-        """__len__ raises NotImplementedError (ASTANA-6 work)."""
-        with pytest.raises(NotImplementedError):
-            len(empty_analysis_result)
+    def test_len_empty(self, empty_analysis_result):
+        """__len__ returns 0 for empty results."""
+        assert len(empty_analysis_result) == 0
+
+    def test_len_populated(self, populated_analysis_result):
+        """__len__ returns count of findings."""
+        assert len(populated_analysis_result) == 3
 
 
 @pytest.mark.analysis_result
