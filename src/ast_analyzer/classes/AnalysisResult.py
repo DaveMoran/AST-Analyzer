@@ -1,7 +1,23 @@
 class AnalysisResult:
     """
-    Takes all of the findings from the CodeAnalyzer class and generates a report
-    to share with our user
+    Container for code analysis findings.
+
+    Takes all of the findings from the CodeAnalyzer class and provides
+    an intuitive interface for working with analysis data.
+
+    Attributes:
+        results: List of finding dictionaries, each containing 'type' and 'message' keys.
+
+    Examples:
+        >>> result = AnalysisResult()
+        >>> result.results.append({"type": "warning", "message": "Too many functions"})
+        >>> len(result)
+        1
+        >>> bool(result)
+        True
+        >>> for finding in result:
+        ...     print(finding["message"])
+        Too many functions
     """
 
     def __init__(self):
