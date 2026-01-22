@@ -24,10 +24,12 @@ class AnalysisResult:
         """Initialize an empty AnalysisResult with no findings."""
         self.results: list[dict[str, Any]] = []
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """Return a developer-friendly representation."""
         return f"AnalysisResult(results={self.results})"
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Return a user-friendly summary of the analysis."""
         return f"Analysis Complete! There are {len(self)} changes to implement"
 
     def __len__(self):
