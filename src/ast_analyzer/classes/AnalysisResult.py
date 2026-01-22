@@ -40,9 +40,9 @@ class AnalysisResult:
         """Return whether or not theres at least 1 result in the result list"""
         raise NotImplementedError("ASTANA-6 will implement")
 
-    def __getitem__(self, index):
-        """Get a specific item from our results list"""
-        return self.results[index]
+    def __iter__(self) -> Iterator[dict[str, Any]]:
+        """Iterate over all findings in the results."""
+        return iter(self.results)
 
     def __add__(self, other):
         """Combine with results from other scans"""
