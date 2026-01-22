@@ -44,6 +44,23 @@ class AnalysisResult:
         """Return True if there are any findings, False otherwise."""
         return len(self.results) > 0
 
+    def __getitem__(self, key: int | str) -> dict[str, Any] | list[dict[str, Any]]:
+        """
+        Access findings by index or by type.
+
+        When given an integer, returns the finding at that index.
+        When given a string, returns all findings matching that type.
+        """
+        if isinstance(key, int):
+            return self.results[key]
+        elif isinstance(key, str):
+            matches = [r for r in self.results if r.get("type") == key]
+            if not matches:
+                raise KeyError(f"No findings of type '{key}'")
+            return matches
+        else:
+            raise TypeError(f"Key must be int or str, not {type(key).__name__}")
+
     def __iter__(self) -> Iterator[dict[str, Any]]:
         """Iterate over all findings in the results."""
         return iter(self.results)
