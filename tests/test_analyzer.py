@@ -67,10 +67,13 @@ class TestAnalysisResultLen:
 class TestAnalysisResultBool:
     """Tests for AnalysisResult.__bool__"""
 
-    def test_bool_raises_not_implemented(self, empty_analysis_result):
-        """__bool__ raises NotImplementedError (ASTANA-6 work)."""
-        with pytest.raises(NotImplementedError):
-            bool(empty_analysis_result)
+    def test_bool_empty_is_false(self, empty_analysis_result):
+        """__bool__ returns False for empty results."""
+        assert bool(empty_analysis_result) is False
+
+    def test_bool_populated_is_true(self, populated_analysis_result):
+        """__bool__ returns True when findings exist."""
+        assert bool(populated_analysis_result) is True
 
 
 @pytest.mark.analysis_result
