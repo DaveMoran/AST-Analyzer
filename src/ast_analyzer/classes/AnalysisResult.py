@@ -44,6 +44,15 @@ class AnalysisResult:
         """Iterate over all findings in the results."""
         return iter(self.results)
 
-    def __add__(self, other):
-        """Combine with results from other scans"""
-        raise NotImplementedError("ASTANA-6 will implement")
+    def __add__(self, other: AnalysisResult) -> AnalysisResult:
+        """
+        Combine results from multiple analyses.
+
+        Creates a new AnalysisResult containing findings from both
+        this result and the other result.
+        """
+        if not isinstance(other, AnalysisResult):
+            return NotImplemented
+        combined = AnalysisResult()
+        combined.results = self.results + other.results
+        return combined
