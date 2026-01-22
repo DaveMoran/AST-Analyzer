@@ -1,3 +1,7 @@
+from __future__ import annotations
+from typing import Any, Iterator
+
+
 class AnalysisResult:
     """
     Container for code analysis findings.
@@ -36,9 +40,9 @@ class AnalysisResult:
         """Return the number of findings in the results."""
         return len(self.results)
 
-    def __bool__(self):
-        """Return whether or not theres at least 1 result in the result list"""
-        raise NotImplementedError("ASTANA-6 will implement")
+    def __bool__(self) -> bool:
+        """Return True if there are any findings, False otherwise."""
+        return len(self.results) > 0
 
     def __iter__(self) -> Iterator[dict[str, Any]]:
         """Iterate over all findings in the results."""
