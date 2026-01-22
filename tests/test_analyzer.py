@@ -41,39 +41,41 @@ class TestAnalysisResultRepr:
 class TestAnalysisResultStr:
     """Tests for AnalysisResult.__str__"""
 
-    def test_str_raises_not_implemented(self, empty_analysis_result):
-        """__str__ raises NotImplementedError because it calls __len__.
+    def test_str_empty(self, empty_analysis_result):
+        """__str__ shows 0 changes for empty results."""
+        assert str(empty_analysis_result) == "Analysis Complete! There are 0 changes to implement"
 
-        Note: __str__ uses len(self) internally, which raises NotImplementedError.
-        This is expected behavior until ASTANA-6 implements __len__.
-        """
-        with pytest.raises(NotImplementedError):
-            str(empty_analysis_result)
-
-    def test_str_raises_with_populated_results(self, populated_analysis_result):
-        """__str__ raises NotImplementedError even with results."""
-        with pytest.raises(NotImplementedError):
-            str(populated_analysis_result)
+    def test_str_populated(self, populated_analysis_result):
+        """__str__ shows count of changes for populated results."""
+        assert (
+            str(populated_analysis_result) == "Analysis Complete! There are 3 changes to implement"
+        )
 
 
 @pytest.mark.analysis_result
 class TestAnalysisResultLen:
     """Tests for AnalysisResult.__len__"""
 
-    def test_len_raises_not_implemented(self, empty_analysis_result):
-        """__len__ raises NotImplementedError (ASTANA-6 work)."""
-        with pytest.raises(NotImplementedError):
-            len(empty_analysis_result)
+    def test_len_empty(self, empty_analysis_result):
+        """__len__ returns 0 for empty results."""
+        assert len(empty_analysis_result) == 0
+
+    def test_len_populated(self, populated_analysis_result):
+        """__len__ returns count of findings."""
+        assert len(populated_analysis_result) == 3
 
 
 @pytest.mark.analysis_result
 class TestAnalysisResultBool:
     """Tests for AnalysisResult.__bool__"""
 
-    def test_bool_raises_not_implemented(self, empty_analysis_result):
-        """__bool__ raises NotImplementedError (ASTANA-6 work)."""
-        with pytest.raises(NotImplementedError):
-            bool(empty_analysis_result)
+    def test_bool_empty_is_false(self, empty_analysis_result):
+        """__bool__ returns False for empty results."""
+        assert bool(empty_analysis_result) is False
+
+    def test_bool_populated_is_true(self, populated_analysis_result):
+        """__bool__ returns True when findings exist."""
+        assert bool(populated_analysis_result) is True
 
 
 @pytest.mark.analysis_result
@@ -100,12 +102,73 @@ class TestAnalysisResultGetitem:
         with pytest.raises(IndexError):
             _ = empty_analysis_result[0]
 
+    def test_getitem_by_type_string(self, populated_analysis_result):
+        """String key returns all findings of that type."""
+        warnings = populated_analysis_result["warning"]
+        assert len(warnings) == 1
+        assert warnings[0]["message"] == "Too many functions"
+
+    def test_getitem_by_type_returns_list(self, populated_analysis_result):
+        """String key returns a list even for single match."""
+        errors = populated_analysis_result["error"]
+        assert isinstance(errors, list)
+        assert len(errors) == 1
+
+    def test_getitem_by_type_key_error(self, populated_analysis_result):
+        """String key with no matches raises KeyError."""
+        with pytest.raises(KeyError):
+            _ = populated_analysis_result["nonexistent"]
+
+    def test_getitem_invalid_type_raises(self, populated_analysis_result):
+        """Non-int, non-str key raises TypeError."""
+        with pytest.raises(TypeError):
+            _ = populated_analysis_result[3.14]
+
+
+@pytest.mark.analysis_result
+class TestAnalysisResultIter:
+    """Tests for AnalysisResult.__iter__"""
+
+    def test_iter_empty(self, empty_analysis_result):
+        """Iterating over empty results yields nothing."""
+        items = list(empty_analysis_result)
+        assert items == []
+
+    def test_iter_populated(self, populated_analysis_result):
+        """Iterating yields each finding in order."""
+        items = list(populated_analysis_result)
+        assert len(items) == 3
+        assert items[0]["type"] == "warning"
+        assert items[1]["type"] == "error"
+        assert items[2]["type"] == "info"
+
+    def test_iter_in_for_loop(self, populated_analysis_result):
+        """Can use in for loop."""
+        types = [item["type"] for item in populated_analysis_result]
+        assert types == ["warning", "error", "info"]
+
 
 @pytest.mark.analysis_result
 class TestAnalysisResultAdd:
     """Tests for AnalysisResult.__add__"""
 
-    def test_add_raises_not_implemented(self, empty_analysis_result, populated_analysis_result):
-        """__add__ raises NotImplementedError (ASTANA-6 work)."""
-        with pytest.raises(NotImplementedError):
-            _ = empty_analysis_result + populated_analysis_result
+    def test_add_combines_results(self, empty_analysis_result, populated_analysis_result):
+        """__add__ combines findings from both results."""
+        combined = empty_analysis_result + populated_analysis_result
+        assert len(combined) == 3
+
+    def test_add_creates_new_instance(self, populated_analysis_result):
+        """__add__ returns a new AnalysisResult, not modifying originals."""
+        from ast_analyzer.classes.AnalysisResult import AnalysisResult
+
+        other = AnalysisResult()
+        other.results.append({"type": "warning", "message": "new warning"})
+        combined = populated_analysis_result + other
+        assert len(combined) == 4
+        assert len(populated_analysis_result) == 3  # original unchanged
+        assert len(other) == 1  # original unchanged
+
+    def test_add_invalid_type_returns_not_implemented(self, empty_analysis_result):
+        """__add__ returns NotImplemented for non-AnalysisResult types."""
+        result = empty_analysis_result.__add__("not an AnalysisResult")
+        assert result is NotImplemented

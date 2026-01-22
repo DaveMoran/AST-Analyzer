@@ -4,7 +4,7 @@ import ast
 import pytest
 from ast_analyzer.ASTNode import ASTNode
 from ast_analyzer.reporter import MetricsCollector
-from ast_analyzer.parser import AnalysisResult
+from ast_analyzer.classes.AnalysisResult import AnalysisResult
 
 
 def pytest_configure(config):
