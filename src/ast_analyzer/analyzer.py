@@ -5,7 +5,7 @@ Responsible for going through the parsed files and determining what updates shou
 criteria of suggestions
 """
 
-from ast_analyzer.parser import AnalysisResult
+from ast_analyzer.classes.AnalysisResult import AnalysisResult
 
 
 def analyzer():
