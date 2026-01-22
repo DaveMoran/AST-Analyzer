@@ -32,9 +32,9 @@ class AnalysisResult:
         """Return a user-friendly summary of the analysis."""
         return f"Analysis Complete! There are {len(self)} changes to implement"
 
-    def __len__(self):
-        """Return the number of items in the results list"""
-        raise NotImplementedError("ASTANA-6 will implement")
+    def __len__(self) -> int:
+        """Return the number of findings in the results."""
+        return len(self.results)
 
     def __bool__(self):
         """Return whether or not theres at least 1 result in the result list"""
