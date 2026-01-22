@@ -34,7 +34,8 @@ class AnalysisResult:
 
     def __str__(self) -> str:
         """Return a user-friendly summary of the analysis."""
-        return f"Analysis Complete! There are {len(self)} changes to implement"
+        count = len(self)
+        return f"Analysis Complete! {count} finding{'s' if count != 1 else ''} to review"
 
     def __len__(self) -> int:
         """Return the number of findings in the results."""
