@@ -4,6 +4,7 @@ import ast
 import pytest
 from ast_analyzer.ASTNode import ASTNode
 from ast_analyzer.reporter import MetricsCollector
+from ast_analyzer.parser import Parser
 
 
 def pytest_configure(config):
@@ -92,3 +93,48 @@ def populated_metrics_collector():
     collector.add_file_metrics(3, 75)
     collector.add_file_metrics(8, 200)
     return collector
+
+
+# -----------------------------------------------------------------------------
+# File Fixtures
+# -----------------------------------------------------------------------------
+@pytest.fixture
+def sample_code_file(tmp_path):
+    """Factory fixture to create temporary Python files with specified content."""
+
+    def _create_file(content, filename="test_file.py"):
+        file_path = tmp_path / filename
+        file_path.write_text(content)
+        return str(file_path)
+
+    return _create_file
+
+
+@pytest.fixture
+def temp_project(tmp_path):
+    """Create a temporary project structure for testing."""
+    # Create directories
+    (tmp_path / "src").mkdir()
+    (tmp_path / "tests").mkdir()
+    (tmp_path / ".venv" / "lib").mkdir(parents=True)
+    (tmp_path / "__pycache__").mkdir()
+    (tmp_path / ".git" / "objects").mkdir(parents=True)
+
+    # Create Python files
+    (tmp_path / "src" / "main.py").write_text("print('hello')")
+    (tmp_path / "src" / "utils.py").write_text("def helper(): pass")
+    (tmp_path / "tests" / "test_main.py").write_text("def test_main(): pass")
+
+    # Create non-Python files
+    (tmp_path / "README.md").write_text("# Project")
+    (tmp_path / "config.json").write_text("{}")
+
+    # Create files in ignored directories
+    (tmp_path / ".venv" / "lib" / "module.py").write_text("# venv file")
+    (tmp_path / "__pycache__" / "main.cpython-312.pyc").write_bytes(b"cache")
+    (tmp_path / ".git" / "objects" / "abc123").write_bytes(b"git object")
+
+    # Create .gitignore
+    (tmp_path / ".gitignore").write_text("*.pyc\n__pycache__/\n.env\n# comment\n\n")
+
+    return tmp_path
