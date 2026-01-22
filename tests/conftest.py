@@ -10,9 +10,7 @@ from ast_analyzer.parser import AnalysisResult
 def pytest_configure(config):
     """Register custom markers."""
     config.addinivalue_line("markers", "astnode: tests for ASTNode class")
-    config.addinivalue_line(
-        "markers", "analysis_result: tests for AnalysisResult class"
-    )
+    config.addinivalue_line("markers", "analysis_result: tests for AnalysisResult class")
     config.addinivalue_line("markers", "metrics: tests for MetricsCollector class")
     config.addinivalue_line("markers", "parser: tests for Parser context manager")
     config.addinivalue_line("markers", "decorators: tests for decorator classes")

@@ -105,9 +105,7 @@ class TestAnalysisResultGetitem:
 class TestAnalysisResultAdd:
     """Tests for AnalysisResult.__add__"""
 
-    def test_add_raises_not_implemented(
-        self, empty_analysis_result, populated_analysis_result
-    ):
+    def test_add_raises_not_implemented(self, empty_analysis_result, populated_analysis_result):
         """__add__ raises NotImplementedError (ASTANA-6 work)."""
         with pytest.raises(NotImplementedError):
             _ = empty_analysis_result + populated_analysis_result
