@@ -4,7 +4,7 @@ import ast
 import pytest
 from ast_analyzer.ASTNode import ASTNode
 from ast_analyzer.reporter import MetricsCollector
-from ast_analyzer.parser import Parser
+from ast_analyzer.parser import AnalysisResult
 
 
 def pytest_configure(config):
@@ -138,3 +138,22 @@ def temp_project(tmp_path):
     (tmp_path / ".gitignore").write_text("*.pyc\n__pycache__/\n.env\n# comment\n\n")
 
     return tmp_path
+
+
+# -----------------------------------------------------------------------------
+# AnalysisResult Fixtures
+# -----------------------------------------------------------------------------
+@pytest.fixture
+def empty_analysis_result():
+    """Create a fresh AnalysisResult with no findings."""
+    return AnalysisResult()
+
+
+@pytest.fixture
+def populated_analysis_result():
+    """Create an AnalysisResult with sample findings."""
+    result = AnalysisResult()
+    result.results.append({"type": "warning", "message": "Too many functions"})
+    result.results.append({"type": "error", "message": "Function too long"})
+    result.results.append({"type": "info", "message": "Consider refactoring"})
+    return result
