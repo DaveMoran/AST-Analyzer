@@ -31,6 +31,7 @@ class CodeAnalyzer:
         Runs all helper methods to populate our results. Once populated, it will
         return the findings populated in the self.results variable
         """
+        self._check_function_count()
         self._check_class_count()
         return self.results
 
@@ -49,10 +50,20 @@ class CodeAnalyzer:
         Uses a visitor to traverse the FunctionDef to see how many times the
         function is called.
 
-        If count > 5, add an error
-        If count > 3, add a warning
+        If count >= 5, add a warning
+        If count >= 8, add an error
         """
-        pass
+        num_funcs = 0
+        for node in self.tree:
+            if node.get_type() == "FunctionDef":
+                num_funcs += 1
+
+        if num_funcs >= 8:
+            self.results.append_warning(
+                f"Too many functions ({num_funcs}).",
+            )
+        elif num_funcs >= 5:
+            self.results.append_warning(f"This file has ({num_funcs}) functions.")
 
     def _check_class_count(self):
         """
@@ -68,12 +79,10 @@ class CodeAnalyzer:
 
         if num_classes >= 8:
             self.results.append_warning(
-                f"Too many classes ({num_classes}). Split this into separate files for better readability",
+                f"Too many classes ({num_classes}).",
             )
         elif num_classes >= 5:
-            self.results.append_warning(
-                f"This file has ({num_classes}) classes. Take care to ensure these are all of the same group"
-            )
+            self.results.append_warning(f"This file has ({num_classes}) classes.")
 
     def _check_docstring_coverage(self):
         """
