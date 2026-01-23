@@ -26,7 +26,7 @@ class AnalysisResult:
 
     def __init__(self) -> None:
         """Initialize an empty AnalysisResult with no findings."""
-        self.results: list[dict[str, Any]] = []
+        self.results: list[dict[str, Any]] = {"warnings": [], "errors": []}
 
     def __repr__(self) -> str:
         """Return a developer-friendly representation."""
@@ -34,7 +34,12 @@ class AnalysisResult:
 
     def __str__(self) -> str:
         """Return a user-friendly summary of the analysis."""
-        return f"Analysis Complete! There are {len(self)} changes to implement"
+        return f"""
+        Analysis Complete! There are {len(self)} changes to implement
+
+        Warnings: {len(self.results['warnings'])}
+        Errors: {len(self.results['errors'])}
+        """
 
     def __len__(self) -> int:
         """Return the number of findings in the results."""
@@ -75,13 +80,14 @@ class AnalysisResult:
         if not isinstance(other, AnalysisResult):
             return NotImplemented
         combined = AnalysisResult()
-        combined.results = self.results + other.results
+        combined.results = {
+            "warnings": self.results["warnings"] + other.results["warnings"],
+            "errors": self.results["errors"] + other.results["errors"],
+        }
         return combined
 
     def append_warning(self, message):
-        print(message)
-        self.results.append({type: "warning", message: message})
+        self.results["warnings"].append({"file": "TODO", message: message})
 
     def append_error(self, message):
-        print(message)
-        self.results.append({type: "error", message: message})
+        self.results["errors"].append({"file": "TODO", message: message})
