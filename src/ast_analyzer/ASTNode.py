@@ -23,7 +23,7 @@ class ASTNode:
         self.node = node
         self.parent = parent
         self.children = []
-        self.metadata: dict[Any, Any] = {}
+        self.metadata: dict[Any, Any] = {"node_type": type(node).__name__}
 
         for child in ast.iter_child_nodes(self.node):
             self.children.append(ASTNode(child, self))
@@ -60,3 +60,7 @@ class ASTNode:
     def __hash__(self) -> int:
         """Returns a hash value that represents the node"""
         return hash((self.node, self.parent))
+
+    def get_type(self) -> str:
+        """Returns the AST node type (e.g., 'ClassDef', 'FunctionDef')"""
+        return self.metadata["node_type"]
