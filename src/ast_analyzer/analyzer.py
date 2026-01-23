@@ -31,15 +31,7 @@ class CodeAnalyzer:
         Runs all helper methods to populate our results. Once populated, it will
         return the findings populated in the self.results variable
         """
-        self._check_function_complexity()
-        self._check_function_count()
         self._check_class_count()
-        self._check_docstring_coverage()
-        self._check_unused_imports()
-        self._check_circular_imports()
-        self._check_function_line_count()
-        self._check_nesting_depth()
-        self._check_naming_conventions()
         return self.results
 
     def _check_function_complexity(self):
@@ -66,10 +58,22 @@ class CodeAnalyzer:
         """
         Takes a Module and counts how many ClassDef are inside
 
-        If >= 3, add to warnings list.
-        If >= 5, add to errors list.
+        If >= 5, add to warnings list.
+        If >= 8, add to errors list.
         """
-        pass
+        num_classes = 0
+        for node in self.tree:
+            if node.get_type() == "ClassDef":
+                num_classes += 1
+
+        if num_classes >= 8:
+            self.results.append_warning(
+                f"Too many classes ({num_classes}). Split this into separate files for better readability",
+            )
+        elif num_classes >= 5:
+            self.results.append_warning(
+                f"This file has ({num_classes}) classes. Take care to ensure these are all of the same group"
+            )
 
     def _check_docstring_coverage(self):
         """
