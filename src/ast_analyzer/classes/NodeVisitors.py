@@ -4,25 +4,25 @@ AST Analyzer
 """
 
 import ast
-from ast_analyzer.ASTNode import ASTNodeVisitor
+from ast_analyzer.ASTNode import ASTNode, ASTNodeVisitor
 
 
 class FunctionCounter(ASTNodeVisitor):
     """Counts FunctionDef and AsyncFunctionDef nodes using ASTNode trees."""
 
-    def __init__(self):
-        self.count = 0
+    def __init__(self) -> None:
+        self.count: int = 0
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Number of functions: {self.count}"
 
-    def visit_FunctionDef(self, node):
+    def visit_FunctionDef(self, node: ASTNode) -> None:
         """Called when a function call (ast.Call node) is encountered."""
         self.count += 1
         # Continue visiting child nodes to find nested calls, arguments, etc.
         self.generic_visit(node)
 
-    def visit_AsyncFunctionDef(self, node):
+    def visit_AsyncFunctionDef(self, node: ASTNode) -> None:
         """Called when a function call (ast.Call node) is encountered."""
         self.count += 1
         # Continue visiting child nodes to find nested calls, arguments, etc.
@@ -32,13 +32,13 @@ class FunctionCounter(ASTNodeVisitor):
 class ClassCounter(ASTNodeVisitor):
     """Counts ClassDef nodes using ASTNode trees."""
 
-    def __init__(self):
-        self.count = 0
+    def __init__(self) -> None:
+        self.count: int = 0
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Number of classes: {self.count}"
 
-    def visit_ClassDef(self, node):
+    def visit_ClassDef(self, node: ASTNode) -> None:
         """Called when a function call (ast.Call node) is encountered."""
         self.count += 1
         # Continue visiting child nodes to find nested calls, arguments, etc.
@@ -48,34 +48,34 @@ class ClassCounter(ASTNodeVisitor):
 class MissingDocstringCounter(ASTNodeVisitor):
     """Checks if FunctionDef, AsyncFunctionDef, ClassDef, and Module nodes contain docstrings using ASTNode trees."""
 
-    def __init__(self):
-        self.count = 0
+    def __init__(self) -> None:
+        self.count: int = 0
 
-    def __bool__(self):
+    def __bool__(self) -> bool:
         return self.count > 0
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Node is missing {self.count} docstrings"
 
-    def visit_FunctionDef(self, node):
+    def visit_FunctionDef(self, node: ASTNode) -> None:
         """Called when a FunctionDef node is encountered."""
         if not ast.get_docstring(node.node):
             self.count += 1
         self.generic_visit(node)
 
-    def visit_AsyncFunctionDef(self, node):
+    def visit_AsyncFunctionDef(self, node: ASTNode) -> None:
         """Called when an AsyncFunctionDef node is encountered."""
         if not ast.get_docstring(node.node):
             self.count += 1
         self.generic_visit(node)
 
-    def visit_ClassDef(self, node):
+    def visit_ClassDef(self, node: ASTNode) -> None:
         """Called when a ClassDef node is encountered."""
         if not ast.get_docstring(node.node):
             self.count += 1
         self.generic_visit(node)
 
-    def visit_Module(self, node):
+    def visit_Module(self, node: ASTNode) -> None:
         """Called when a Module node is encountered."""
         if not ast.get_docstring(node.node):
             self.count += 1
@@ -85,13 +85,13 @@ class MissingDocstringCounter(ASTNodeVisitor):
 class FunctionLineCounter(ASTNodeVisitor):
     """Counts FunctionDef and AsyncFunctionDef nodes using ASTNode trees."""
 
-    def __init__(self):
-        self.num_lines = 0
+    def __init__(self) -> None:
+        self.num_lines: int = 0
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Number of lines in function: {self.num_lines}"
 
-    def visit_FunctionDef(self, node):
+    def visit_FunctionDef(self, node: ASTNode) -> None:
         """Called when a function call (ast.Call node) is encountered."""
         start_line = getattr(node.node, "lineno", None)
         end_line = getattr(node.node, "end_lineno", None)
@@ -101,7 +101,7 @@ class FunctionLineCounter(ASTNodeVisitor):
         # Continue visiting child nodes to find nested calls, arguments, etc.
         self.generic_visit(node)
 
-    def visit_AsyncFunctionDef(self, node):
+    def visit_AsyncFunctionDef(self, node: ASTNode) -> None:
         """Called when an async function call (ast.Call node) is encountered."""
         start_line = getattr(node.node, "lineno", None)
         end_line = getattr(node.node, "end_lineno", None)
@@ -120,56 +120,56 @@ class ComplexityCounter(ASTNodeVisitor):
     - Exception handlers: except blocks (+1 each)
     """
 
-    def __init__(self):
-        self.score = 0
+    def __init__(self) -> None:
+        self.score: int = 0
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Complexity score: {self.score}"
 
     # Branches
-    def visit_If(self, node):
+    def visit_If(self, node: ASTNode) -> None:
         """Count if/elif statements."""
         self.score += 1
         self.generic_visit(node)
 
-    def visit_IfExp(self, node):
+    def visit_IfExp(self, node: ASTNode) -> None:
         """Count ternary expressions (x if cond else y)."""
         self.score += 1
         self.generic_visit(node)
 
     # Loops
-    def visit_For(self, node):
+    def visit_For(self, node: ASTNode) -> None:
         """Count for loops."""
         self.score += 1
         self.generic_visit(node)
 
-    def visit_While(self, node):
+    def visit_While(self, node: ASTNode) -> None:
         """Count while loops."""
         self.score += 1
         self.generic_visit(node)
 
-    def visit_ListComp(self, node):
+    def visit_ListComp(self, node: ASTNode) -> None:
         """Count list comprehensions."""
         self.score += 1
         self.generic_visit(node)
 
-    def visit_SetComp(self, node):
+    def visit_SetComp(self, node: ASTNode) -> None:
         """Count set comprehensions."""
         self.score += 1
         self.generic_visit(node)
 
-    def visit_DictComp(self, node):
+    def visit_DictComp(self, node: ASTNode) -> None:
         """Count dict comprehensions."""
         self.score += 1
         self.generic_visit(node)
 
-    def visit_GeneratorExp(self, node):
+    def visit_GeneratorExp(self, node: ASTNode) -> None:
         """Count generator expressions."""
         self.score += 1
         self.generic_visit(node)
 
     # Exception handlers
-    def visit_ExceptHandler(self, node):
+    def visit_ExceptHandler(self, node: ASTNode) -> None:
         """Count except blocks."""
         self.score += 1
         self.generic_visit(node)
