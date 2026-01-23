@@ -46,6 +46,9 @@ class CodeAnalyzer:
         """
         Use a custom rubric to determine the complexity of the code. Combines
         findings from the existing result scan as well as other best practices
+
+        If >= 10, add to warnings list.
+        If >= 15, add to errors list.
         """
         pass
 
@@ -60,28 +63,66 @@ class CodeAnalyzer:
         pass
 
     def _check_class_count(self):
+        """
+        Takes a Module and counts how many ClassDef are inside
+
+        If >= 3, add to warnings list.
+        If >= 5, add to errors list.
+        """
         pass
 
     def _check_docstring_coverage(self):
+        """
+        Use ast's built in get_docstring to see how many FunctionDef and
+        ClassDef nodes contain a docstring
+
+        If >= 1, add to warnings list.
+        If >= 5, add to errors list.
+        """
         pass
 
     def _check_unused_imports(self):
+        """
+        Check list of imports and see if they are called in any FunctionDef
+        nodes
+
+        If >= 1, add to warnings list.
+        If >= 3, add to errors list.
+        """
         pass
 
     def _check_circular_imports(self):
+        """
+        TODO: Research how to check for circular imports
+        """
         pass
 
     def _check_function_line_count(self):
         """
         Takes a FunctionDef node and checks the lineno property to see how many
         lines the function has.
+
         If >= 50, add to warnings list.
         If >= 100, add to errors list.
         """
         pass
 
     def _check_nesting_depth(self):
+        """
+        Checks for depth of FunctionDef and ClassDef to see how many
+        loops/conditionals are included in the function.
+
+        If >= 10, add to warnings list.
+        If >= 15, add to errors list.
+        """
         pass
 
     def _check_naming_conventions(self):
+        """
+        Checks the name of each ClassDef, FunctionDef, and Assign targets to
+        make sure that they are following proper conventions
+
+        If >= 10, add to warnings list.
+        If >= 15, add to errors list.
+        """
         pass
