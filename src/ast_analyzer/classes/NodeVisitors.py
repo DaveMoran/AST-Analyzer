@@ -51,10 +51,10 @@ class MissingDocstringCounter(ASTNodeVisitor):
         self.count = 0
 
     def __bool__(self):
-        return self.has_docstring
+        return self.count > 0
 
     def __str__(self):
-        return f"Node has docstring: {self}"
+        return f"Node is missing {self.count} docstrings"
 
     def visit_FunctionDef(self, node):
         """Called when a function call (ast.Call node) is encountered."""
