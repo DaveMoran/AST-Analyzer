@@ -47,11 +47,11 @@ class CodeAnalyzer:
         self._check_function_count()
         self._check_class_count()
         self._check_docstring_coverage()
-        self._check_unused_imports()
-        self._check_circular_imports()
+        # self._check_unused_imports()
+        # self._check_circular_imports()
         self._check_function_line_count()
-        self._check_nesting_depth()
-        self._check_naming_conventions()
+        # self._check_nesting_depth()
+        # self._check_naming_conventions()
         return self.results
 
     def _check_function_complexity(self):
@@ -136,14 +136,14 @@ class CodeAnalyzer:
         If >= 1, add to warnings list.
         If >= 3, add to errors list.
         """
-        print("TODO: _check_unused_imports")
+        print("TODO: ASTANA-24")
         pass
 
     def _check_circular_imports(self):
         """
         TODO: Research how to check for circular imports
         """
-        print("TODO: _check_circular_imports")
+        print("TODO: ASTANA-24")
         pass
 
     def _check_function_line_count(self):
@@ -176,7 +176,7 @@ class CodeAnalyzer:
         If >= 10, add to warnings list.
         If >= 15, add to errors list.
         """
-        print("TODO: _check_nesting_depth")
+        print("TODO: ASTANA-24")
         pass
 
     def _check_naming_conventions(self):
@@ -187,5 +187,5 @@ class CodeAnalyzer:
         If >= 10, add to warnings list.
         If >= 15, add to errors list.
         """
-        print("TODO: _check_naming_conventions")
+        print("TODO: ASTANA-24")
         pass
