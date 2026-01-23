@@ -26,7 +26,11 @@ class AnalysisResult:
 
     def __init__(self) -> None:
         """Initialize an empty AnalysisResult with no findings."""
-        self.results: list[dict[str, Any]] = {"warnings": [], "errors": []}
+        self.results: list[dict[str, Any]] = {
+            "warnings": [],
+            "errors": [],
+            "files": set(),
+        }
 
     def __repr__(self) -> str:
         """Return a developer-friendly representation."""
@@ -34,7 +38,7 @@ class AnalysisResult:
 
     def __str__(self) -> str:
         """Return a user-friendly summary of the analysis."""
-        if self:
+        if not self:
             return "Congrats! No errors or warnings found in directory"
         else:
             return f"""
@@ -42,11 +46,12 @@ class AnalysisResult:
 
             Warnings: {len(self.results['warnings'])}
             Errors: {len(self.results['errors'])}
+            Files to Change: {len(self.results['files'])}
             """
 
     def __len__(self) -> int:
         """Return the number of findings in the results."""
-        return len(self.results)
+        return len(self.results["warnings"] + self.results["errors"])
 
     def __bool__(self) -> bool:
         """Return True if there are any findings, False otherwise."""
@@ -86,11 +91,14 @@ class AnalysisResult:
         combined.results = {
             "warnings": self.results["warnings"] + other.results["warnings"],
             "errors": self.results["errors"] + other.results["errors"],
+            "files": self.results["files"] | other.results["files"],
         }
         return combined
 
-    def append_warning(self, message):
-        self.results["warnings"].append({"file": "TODO", message: message})
+    def append_warning(self, message, filename):
+        self.results["warnings"].append({"file": filename, message: message})
+        self.results["files"].add(filename)
 
-    def append_error(self, message):
-        self.results["errors"].append({"file": "TODO", message: message})
+    def append_error(self, message, filename):
+        self.results["errors"].append({"file": filename, message: message})
+        self.results["files"].add(filename)

@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 
 def main():
     # Step 1: Ask user for directory of files
-    directory = "./src/ast_analyzer/test"  # TODO - swap out with CLI command when we get to that story
+    directory = "./src/ast_analyzer"  # TODO - swap out with CLI command when we get to that story
 
     # Step 2: Filter out all invalid files from directory
     working_files = get_working_files(directory)
@@ -37,7 +37,7 @@ def main():
                 node = ASTNode(test_tree)
 
                 # Step 6: Run the nodes through our analysis
-                analyzer = CodeAnalyzer(node, results)
+                analyzer = CodeAnalyzer(node, file, results)
 
                 # Step 7: Generate a report based on findings
                 new_result = analyzer.analyze()

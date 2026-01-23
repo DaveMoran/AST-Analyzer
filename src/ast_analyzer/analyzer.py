@@ -22,9 +22,15 @@ class CodeAnalyzer:
       tree: The parsed AST Tree that the analyzer will be navagating through
     """
 
-    def __init__(self, tree, results=None):
+    def __init__(
+        self,
+        tree,
+        filename,
+        results=None,
+    ):
         self.tree = tree
         self.results = results if results is not None else AnalysisResult()
+        self.filename = filename.name
 
     def analyze(self):
         """
@@ -68,10 +74,12 @@ class CodeAnalyzer:
 
         if num_funcs >= 8:
             self.results.append_error(
-                f"Too many functions ({num_funcs}).",
+                f"Too many functions ({num_funcs}).", self.filename
             )
         elif num_funcs >= 5:
-            self.results.append_warning(f"This file has ({num_funcs}) functions.")
+            self.results.append_warning(
+                f"This file has ({num_funcs}) functions.", self.filename
+            )
 
     def _check_class_count(self):
         """
@@ -87,10 +95,12 @@ class CodeAnalyzer:
 
         if num_classes >= 8:
             self.results.append_error(
-                f"Too many classes ({num_classes}).",
+                f"Too many classes ({num_classes}).", self.filename
             )
         elif num_classes >= 5:
-            self.results.append_warning(f"This file has ({num_classes}) classes.")
+            self.results.append_warning(
+                f"This file has ({num_classes}) classes.", self.filename
+            )
 
     def _check_docstring_coverage(self):
         """
@@ -113,10 +123,10 @@ class CodeAnalyzer:
 
         if counter >= 5:
             self.results.append_error(
-                f"Too many items without docstring ({counter})",
+                f"Too many items without docstring ({counter})", self.filename
             )
         elif counter >= 1:
-            self.results.append_warning(f"Missing {counter} docstrings")
+            self.results.append_warning(f"Missing {counter} docstrings", self.filename)
 
     def _check_unused_imports(self):
         """
@@ -149,9 +159,14 @@ class CodeAnalyzer:
                 num_lines = node.metadata["num_lines"]
 
                 if num_lines >= 100:
-                    self.results.append_error(f"Function too large ({num_lines} lines)")
+                    self.results.append_error(
+                        f"Function too large ({num_lines} lines)", self.filename
+                    )
                 elif num_lines >= 50:
-                    self.results.append_warning(f"Function starting to grow unweildy ({num_lines})")
+                    self.results.append_warning(
+                        f"Function starting to grow unweildy ({num_lines})",
+                        self.filename,
+                    )
 
     def _check_nesting_depth(self):
         """
