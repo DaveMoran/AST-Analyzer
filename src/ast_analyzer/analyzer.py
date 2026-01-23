@@ -10,6 +10,7 @@ from ast_analyzer.classes.NodeVisitors import (
     FunctionCounter,
     ClassCounter,
     MissingDocstringCounter,
+    FunctionLineCounter,
 )
 
 
@@ -153,19 +154,19 @@ class CodeAnalyzer:
         If >= 50, add to warnings list.
         If >= 100, add to errors list.
         """
-        for node in self.tree:
-            if node.get_type() == "FunctionDef":
-                num_lines = node.metadata["num_lines"]
+        line_counter = FunctionLineCounter()
+        line_counter.visit(self.tree)
+        num_lines = line_counter.num_lines
 
-                if num_lines >= 100:
-                    self.results.append_error(
-                        f"Function too large ({num_lines} lines)", self.filename
-                    )
-                elif num_lines >= 50:
-                    self.results.append_warning(
-                        f"Function starting to grow unweildy ({num_lines})",
-                        self.filename,
-                    )
+        if num_lines >= 100:
+            self.results.append_error(
+                f"Function too large ({num_lines} lines)", self.filename
+            )
+        elif num_lines >= 50:
+            self.results.append_warning(
+                f"Function starting to grow unweildy ({num_lines})",
+                self.filename,
+            )
 
     def _check_nesting_depth(self):
         """
