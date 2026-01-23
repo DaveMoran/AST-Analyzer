@@ -144,8 +144,16 @@ class CodeAnalyzer:
         If >= 50, add to warnings list.
         If >= 100, add to errors list.
         """
-        print("TODO: _check_function_line_count")
-        pass
+        for node in self.tree:
+            if node.get_type() == "FunctionDef":
+                num_lines = node.metadata["num_lines"]
+
+                if num_lines >= 100:
+                    self.results.append_error(f"Function too large ({num_lines} lines)")
+                elif num_lines >= 50:
+                    self.results.append_warning(
+                        f"Function starting to grow unweildy ({num_lines})"
+                    )
 
     def _check_nesting_depth(self):
         """
