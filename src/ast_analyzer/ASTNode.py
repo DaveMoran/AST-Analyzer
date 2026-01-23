@@ -32,9 +32,15 @@ class ASTNode:
         ] and ast.get_docstring(node):
             self.has_docstring = True
 
+        # Calculate line count if both lineno and end_lineno exist
+        start_line = getattr(node, "lineno", None)
+        end_line = getattr(node, "end_lineno", None)
+        num_lines = (end_line - start_line + 1) if start_line and end_line else 0
+
         self.metadata: dict[Any, Any] = {
             "node_type": type(node).__name__,
             "has_docstring": self.has_docstring,
+            "num_lines": num_lines,
         }
 
         for child in ast.iter_child_nodes(self.node):
