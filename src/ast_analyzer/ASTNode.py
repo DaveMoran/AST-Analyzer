@@ -24,10 +24,6 @@ class ASTNode:
         self.parent = parent
         self.children = []
 
-        self.metadata: dict[Any, Any] = {
-            "node_type": type(node).__name__,
-        }
-
         for child in ast.iter_child_nodes(self.node):
             self.children.append(ASTNode(child, self))
 
@@ -64,17 +60,13 @@ class ASTNode:
         """Returns a hash value that represents the node"""
         return hash((self.node, self.parent))
 
-    def get_type(self) -> str:
-        """Returns the AST node type (e.g., 'ClassDef', 'FunctionDef')"""
-        return self.metadata["node_type"]
-
 
 class ASTNodeVisitor:
     """Visitor pattern for traversing ASTNode trees."""
 
     def visit(self, node: "ASTNode"):
         """Visit a node and dispatch to the appropriate visit method."""
-        method_name = f"visit_{node.get_type()}"
+        method_name = f"visit_{type(node.node).__name__}"
         visitor = getattr(self, method_name, self.generic_visit)
         return visitor(node)
 
