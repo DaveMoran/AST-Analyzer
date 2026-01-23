@@ -22,9 +22,9 @@ class CodeAnalyzer:
       tree: The parsed AST Tree that the analyzer will be navagating through
     """
 
-    def __init__(self, tree):
+    def __init__(self, tree, results=None):
         self.tree = tree
-        self.results = AnalysisResult()
+        self.results = results if results is not None else AnalysisResult()
 
     def analyze(self):
         """
