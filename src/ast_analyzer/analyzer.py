@@ -73,13 +73,9 @@ class CodeAnalyzer:
                 num_funcs += 1
 
         if num_funcs >= 8:
-            self.results.append_error(
-                f"Too many functions ({num_funcs}).", self.filename
-            )
+            self.results.append_error(f"Too many functions ({num_funcs}).", self.filename)
         elif num_funcs >= 5:
-            self.results.append_warning(
-                f"This file has ({num_funcs}) functions.", self.filename
-            )
+            self.results.append_warning(f"This file has ({num_funcs}) functions.", self.filename)
 
     def _check_class_count(self):
         """
@@ -94,13 +90,9 @@ class CodeAnalyzer:
                 num_classes += 1
 
         if num_classes >= 8:
-            self.results.append_error(
-                f"Too many classes ({num_classes}).", self.filename
-            )
+            self.results.append_error(f"Too many classes ({num_classes}).", self.filename)
         elif num_classes >= 5:
-            self.results.append_warning(
-                f"This file has ({num_classes}) classes.", self.filename
-            )
+            self.results.append_warning(f"This file has ({num_classes}) classes.", self.filename)
 
     def _check_docstring_coverage(self):
         """

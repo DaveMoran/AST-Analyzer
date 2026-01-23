@@ -44,9 +44,9 @@ class AnalysisResult:
             return f"""
             Analysis Complete! There are {len(self)} changes to implement
 
-            Warnings: {len(self.results['warnings'])}
-            Errors: {len(self.results['errors'])}
-            Files to Change: {len(self.results['files'])}
+            Warnings: {len(self.results["warnings"])}
+            Errors: {len(self.results["errors"])}
+            Files to Change: {len(self.results["files"])}
             """
 
     def __len__(self) -> int:
