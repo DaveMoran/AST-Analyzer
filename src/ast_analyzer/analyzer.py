@@ -70,13 +70,9 @@ class CodeAnalyzer:
         score = counter.score
 
         if score >= 15:
-            self.results.append_error(
-                f"High complexity score ({score})", self.filename
-            )
+            self.results.append_error(f"High complexity score ({score})", self.filename)
         elif score >= 10:
-            self.results.append_warning(
-                f"Moderate complexity score ({score})", self.filename
-            )
+            self.results.append_warning(f"Moderate complexity score ({score})", self.filename)
 
     def _check_function_count(self):
         """
@@ -91,13 +87,9 @@ class CodeAnalyzer:
         num_funcs = counter.count
 
         if num_funcs >= 8:
-            self.results.append_error(
-                f"Too many functions ({num_funcs}).", self.filename
-            )
+            self.results.append_error(f"Too many functions ({num_funcs}).", self.filename)
         elif num_funcs >= 5:
-            self.results.append_warning(
-                f"This file has ({num_funcs}) functions.", self.filename
-            )
+            self.results.append_warning(f"This file has ({num_funcs}) functions.", self.filename)
 
     def _check_class_count(self):
         """
@@ -111,13 +103,9 @@ class CodeAnalyzer:
         num_classes = counter.count
 
         if num_classes >= 8:
-            self.results.append_error(
-                f"Too many classes ({num_classes}).", self.filename
-            )
+            self.results.append_error(f"Too many classes ({num_classes}).", self.filename)
         elif num_classes >= 5:
-            self.results.append_warning(
-                f"This file has ({num_classes}) classes.", self.filename
-            )
+            self.results.append_warning(f"This file has ({num_classes}) classes.", self.filename)
 
     def _check_docstring_coverage(self):
         """
@@ -172,9 +160,7 @@ class CodeAnalyzer:
         num_lines = line_counter.num_lines
 
         if num_lines >= 100:
-            self.results.append_error(
-                f"Function too large ({num_lines} lines)", self.filename
-            )
+            self.results.append_error(f"Function too large ({num_lines} lines)", self.filename)
         elif num_lines >= 50:
             self.results.append_warning(
                 f"Function starting to grow unweildy ({num_lines})",
