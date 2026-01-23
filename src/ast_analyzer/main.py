@@ -18,7 +18,9 @@ logging.basicConfig(level=logging.INFO)
 
 def main():
     # Step 1: Ask user for directory of files
-    directory = "./src/ast_analyzer/test"  # TODO - swap out with CLI command when we get to that story
+    directory = (
+        "./src/ast_analyzer/test"  # TODO - swap out with CLI command when we get to that story
+    )
 
     # Step 2: Filter out all invalid files from directory
     working_files = get_working_files(directory)

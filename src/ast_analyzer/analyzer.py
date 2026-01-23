@@ -151,9 +151,7 @@ class CodeAnalyzer:
                 if num_lines >= 100:
                     self.results.append_error(f"Function too large ({num_lines} lines)")
                 elif num_lines >= 50:
-                    self.results.append_warning(
-                        f"Function starting to grow unweildy ({num_lines})"
-                    )
+                    self.results.append_warning(f"Function starting to grow unweildy ({num_lines})")
 
     def _check_nesting_depth(self):
         """
