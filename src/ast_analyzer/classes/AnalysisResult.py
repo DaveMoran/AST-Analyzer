@@ -96,10 +96,17 @@ class AnalysisResult:
         }
         return combined
 
-    def append_warning(self, message, filename):
-        self.results["warnings"].append({"file": filename, message: message})
+    def append_warning(self, message: str, filename: str) -> None:
+        """Add a warning to the results."""
+        self.results["warnings"].append(
+            {
+                "file": filename,
+                "message": message,
+            }
+        )
         self.results["files"].add(filename)
 
-    def append_error(self, message, filename):
-        self.results["errors"].append({"file": filename, message: message})
+    def append_error(self, message: str, filename: str) -> None:
+        """Add an error to the results."""
+        self.results["errors"].append({"file": filename, "message": message})
         self.results["files"].add(filename)
