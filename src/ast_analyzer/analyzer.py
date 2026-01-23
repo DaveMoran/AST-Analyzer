@@ -6,7 +6,7 @@ criteria of suggestions
 """
 
 from ast_analyzer.classes.AnalysisResult import AnalysisResult
-from ast_analyzer.classes.NodeVisitors import FunctionCounter
+from ast_analyzer.classes.NodeVisitors import FunctionCounter, ClassCounter
 
 
 def analyzer():
@@ -73,9 +73,13 @@ class CodeAnalyzer:
         num_funcs = counter.count
 
         if num_funcs >= 8:
-            self.results.append_error(f"Too many functions ({num_funcs}).", self.filename)
+            self.results.append_error(
+                f"Too many functions ({num_funcs}).", self.filename
+            )
         elif num_funcs >= 5:
-            self.results.append_warning(f"This file has ({num_funcs}) functions.", self.filename)
+            self.results.append_warning(
+                f"This file has ({num_funcs}) functions.", self.filename
+            )
 
     def _check_class_count(self):
         """
@@ -84,15 +88,18 @@ class CodeAnalyzer:
         If >= 5, add to warnings list.
         If >= 8, add to errors list.
         """
-        num_classes = 0
-        for node in self.tree:
-            if node.get_type() == "ClassDef":
-                num_classes += 1
+        counter = ClassCounter()
+        counter.visit(self.tree)
+        num_classes = counter.count
 
         if num_classes >= 8:
-            self.results.append_error(f"Too many classes ({num_classes}).", self.filename)
+            self.results.append_error(
+                f"Too many classes ({num_classes}).", self.filename
+            )
         elif num_classes >= 5:
-            self.results.append_warning(f"This file has ({num_classes}) classes.", self.filename)
+            self.results.append_warning(
+                f"This file has ({num_classes}) classes.", self.filename
+            )
 
     def _check_docstring_coverage(self):
         """
