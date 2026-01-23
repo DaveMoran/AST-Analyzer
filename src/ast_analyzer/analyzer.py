@@ -6,6 +6,7 @@ criteria of suggestions
 """
 
 from ast_analyzer.classes.AnalysisResult import AnalysisResult
+from ast_analyzer.classes.NodeVisitors import FunctionCounter
 
 
 def analyzer():
@@ -67,10 +68,9 @@ class CodeAnalyzer:
         If count >= 5, add a warning
         If count >= 8, add an error
         """
-        num_funcs = 0
-        for node in self.tree:
-            if node.get_type() == "FunctionDef":
-                num_funcs += 1
+        counter = FunctionCounter()
+        counter.visit(self.tree)
+        num_funcs = counter.count
 
         if num_funcs >= 8:
             self.results.append_error(f"Too many functions ({num_funcs}).", self.filename)
