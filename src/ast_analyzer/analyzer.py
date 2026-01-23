@@ -6,7 +6,11 @@ criteria of suggestions
 """
 
 from ast_analyzer.classes.AnalysisResult import AnalysisResult
-from ast_analyzer.classes.NodeVisitors import FunctionCounter, ClassCounter
+from ast_analyzer.classes.NodeVisitors import (
+    FunctionCounter,
+    ClassCounter,
+    HasDocstring,
+)
 
 
 def analyzer():
@@ -104,28 +108,16 @@ class CodeAnalyzer:
     def _check_docstring_coverage(self):
         """
         Use ast's built in get_docstring to see how many FunctionDef and
-        ClassDef nodes contain a docstring
+        ClassDef nodes contain a docstring.
 
-        If >= 1, add to warnings list.
-        If >= 5, add to errors list.
+        This will be strict. If anything doesnt have a docstring it's an
+        immediate warning.
         """
-        counter = 0
-        for node in self.tree:
-            if node.get_type() in [
-                "FunctionDef",
-                "AsyncFunctionDef",
-                "ClassDef",
-                "Module",
-            ]:
-                if not node.metadata["has_docstring"]:
-                    counter += 1
+        docstring_checker = HasDocstring()
+        docstring_checker.visit(self.tree)
 
-        if counter >= 5:
-            self.results.append_error(
-                f"Too many items without docstring ({counter})", self.filename
-            )
-        elif counter >= 1:
-            self.results.append_warning(f"Missing {counter} docstrings", self.filename)
+        if not docstring_checker:
+            self.results.append_warning(f"Missing Docstring", self.filename)
 
     def _check_unused_imports(self):
         """
