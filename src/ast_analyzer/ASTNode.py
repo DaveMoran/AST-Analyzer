@@ -82,3 +82,18 @@ class ASTNode:
     def get_type(self) -> str:
         """Returns the AST node type (e.g., 'ClassDef', 'FunctionDef')"""
         return self.metadata["node_type"]
+
+
+class ASTNodeVisitor:
+    """Visitor pattern for traversing ASTNode trees."""
+
+    def visit(self, node: "ASTNode"):
+        """Visit a node and dispatch to the appropriate visit method."""
+        method_name = f"visit_{node.get_type()}"
+        visitor = getattr(self, method_name, self.generic_visit)
+        return visitor(node)
+
+    def generic_visit(self, node: "ASTNode"):
+        """Default visitor that recursively visits all children."""
+        for child in node:
+            self.visit(child)
