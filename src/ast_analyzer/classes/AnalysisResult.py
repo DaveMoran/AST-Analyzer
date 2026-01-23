@@ -77,3 +77,11 @@ class AnalysisResult:
         combined = AnalysisResult()
         combined.results = self.results + other.results
         return combined
+
+    def append_warning(self, message):
+        print(message)
+        self.results.append({type: "warning", message: message})
+
+    def append_error(self, message):
+        print(message)
+        self.results.append({type: "error", message: message})
