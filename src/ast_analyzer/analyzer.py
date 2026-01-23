@@ -37,6 +37,13 @@ class CodeAnalyzer:
         self._check_function_complexity()
         return self.results
 
+    def _check_function_complexity(self):
+        """
+        Use a custom rubric to determine the complexity of the code. Combines
+        findings from the existing result scan as well as other best practices
+        """
+        pass
+
     def _check_function_count(self):
         """
         Uses a visitor to traverse the FunctionDef to see how many times the
@@ -45,6 +52,18 @@ class CodeAnalyzer:
         If count > 5, add an error
         If count > 3, add a warning
         """
+        pass
+
+    def _check_class_count(self):
+        pass
+
+    def _check_docstring_coverage(self):
+        pass
+
+    def _check_unused_imports(self):
+        pass
+
+    def _check_circular_imports(self):
         pass
 
     def _check_function_line_count(self):
@@ -56,16 +75,8 @@ class CodeAnalyzer:
         """
         pass
 
-    def _check_unused_imports(self):
-        """
-        TODO - implement this later in the bootcamp when we have a stronger
-        understanding of Python code
-        """
+    def _check_nesting_depth(self):
         pass
 
-    def _check_function_complexity(self):
-        """
-        Use a custom rubric to determine the complexity of the code. Combines
-        findings from the existing result scan as well as other best practices
-        """
+    def _check_naming_conventions(self):
         pass
