@@ -11,6 +11,7 @@ from ast_analyzer.classes.NodeVisitors import (
     ClassCounter,
     MissingDocstringCounter,
     FunctionLineCounter,
+    ComplexityCounter,
 )
 
 
@@ -56,14 +57,26 @@ class CodeAnalyzer:
 
     def _check_function_complexity(self):
         """
-        Use a custom rubric to determine the complexity of the code. Combines
-        findings from the existing result scan as well as other best practices
+        Calculate complexity score based on:
+        - Branches: if, elif, ternary expressions (+1 each)
+        - Loops: for, while, comprehensions (+1 each)
+        - Exception handlers: except blocks (+1 each)
 
         If >= 10, add to warnings list.
         If >= 15, add to errors list.
         """
-        print("TODO: _check_function_complexity")
-        pass
+        counter = ComplexityCounter()
+        counter.visit(self.tree)
+        score = counter.score
+
+        if score >= 15:
+            self.results.append_error(
+                f"High complexity score ({score})", self.filename
+            )
+        elif score >= 10:
+            self.results.append_warning(
+                f"Moderate complexity score ({score})", self.filename
+            )
 
     def _check_function_count(self):
         """

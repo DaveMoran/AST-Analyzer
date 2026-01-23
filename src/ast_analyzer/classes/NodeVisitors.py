@@ -110,3 +110,66 @@ class FunctionLineCounter(ASTNodeVisitor):
         self.num_lines = num_lines
         # Continue visiting child nodes to find nested calls, arguments, etc.
         self.generic_visit(node)
+
+
+class ComplexityCounter(ASTNodeVisitor):
+    """
+    Calculates complexity score for functions based on:
+    - Branches: if, elif, ternary expressions (+1 each)
+    - Loops: for, while, comprehensions (+1 each)
+    - Exception handlers: except blocks (+1 each)
+    """
+
+    def __init__(self):
+        self.score = 0
+
+    def __str__(self):
+        return f"Complexity score: {self.score}"
+
+    # Branches
+    def visit_If(self, node):
+        """Count if/elif statements."""
+        self.score += 1
+        self.generic_visit(node)
+
+    def visit_IfExp(self, node):
+        """Count ternary expressions (x if cond else y)."""
+        self.score += 1
+        self.generic_visit(node)
+
+    # Loops
+    def visit_For(self, node):
+        """Count for loops."""
+        self.score += 1
+        self.generic_visit(node)
+
+    def visit_While(self, node):
+        """Count while loops."""
+        self.score += 1
+        self.generic_visit(node)
+
+    def visit_ListComp(self, node):
+        """Count list comprehensions."""
+        self.score += 1
+        self.generic_visit(node)
+
+    def visit_SetComp(self, node):
+        """Count set comprehensions."""
+        self.score += 1
+        self.generic_visit(node)
+
+    def visit_DictComp(self, node):
+        """Count dict comprehensions."""
+        self.score += 1
+        self.generic_visit(node)
+
+    def visit_GeneratorExp(self, node):
+        """Count generator expressions."""
+        self.score += 1
+        self.generic_visit(node)
+
+    # Exception handlers
+    def visit_ExceptHandler(self, node):
+        """Count except blocks."""
+        self.score += 1
+        self.generic_visit(node)
