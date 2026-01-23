@@ -3,10 +3,12 @@ Group of classes that maintain all of the Node Visitors we'll be using for our
 AST Analyzer
 """
 
-import ast
+from ast_analyzer.ASTNode import ASTNodeVisitor
 
 
-class FunctionCallCounter(ast.NodeVisitor):
+class FunctionCounter(ASTNodeVisitor):
+    """Counts FunctionDef and AsyncFunctionDef nodes using ASTNode trees."""
+
     def __init__(self):
         self.count = 0
 
