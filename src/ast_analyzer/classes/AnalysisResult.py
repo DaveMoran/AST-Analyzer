@@ -55,28 +55,29 @@ class AnalysisResult:
 
     def __bool__(self) -> bool:
         """Return True if there are any findings, False otherwise."""
-        return len(self.results) > 0
+        return bool(self.results["warnings"] or self.results["errors"])
 
-    def __getitem__(self, key: int | str) -> dict[str, Any] | list[dict[str, Any]]:
+    def __getitem__(self, key: str) -> list[dict[str, Any]]:
         """
-        Access findings by index or by type.
+        Access findings by category.
 
-        When given an integer, returns the finding at that index.
-        When given a string, returns all findings matching that type.
+        Args:
+            key: "warnings" or "errors" to get that category's findings.
+
+        Returns:
+            List of findings for that category.
+
+        Raises:
+            KeyError: If key is not "warnings" or "errors".
         """
-        if isinstance(key, int):
+        if key in ("warnings", "errors"):
             return self.results[key]
-        elif isinstance(key, str):
-            matches = [r for r in self.results if r.get("type") == key]
-            if not matches:
-                raise KeyError(f"No findings of type '{key}'")
-            return matches
-        else:
-            raise TypeError(f"Key must be int or str, not {type(key).__name__}")
+        raise KeyError(f"Invalid key '{key}'. Use 'warnings' or 'errors'.")
 
     def __iter__(self) -> Iterator[dict[str, Any]]:
-        """Iterate over all findings in the results."""
-        return iter(self.results)
+        """Iterate over all findings (warnings then errors)."""
+        yield from self.results["warnings"]
+        yield from self.results["errors"]
 
     def __add__(self, other: AnalysisResult) -> AnalysisResult:
         """
