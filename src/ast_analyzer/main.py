@@ -11,13 +11,14 @@ import textwrap
 from ast_analyzer.ASTNode import ASTNode
 from ast_analyzer.generators.file_traversal import get_working_files
 from ast_analyzer.parser import Parser
+from ast_analyzer.analyzer import CodeAnalyzer
 
 logging.basicConfig(level=logging.INFO)
 
 
 def main():
     # Step 1: Ask user for directory of files
-    directory = "./src/ast_analyzer"  # TODO - swap out with CLI command when we get to that story
+    directory = "./src/ast_analyzer/test"  # TODO - swap out with CLI command when we get to that story
 
     # Step 2: Filter out all invalid files from directory
     working_files = get_working_files(directory)
@@ -32,6 +33,9 @@ def main():
                 dedented_code = textwrap.dedent(content)
                 test_tree = ast.parse(dedented_code)
                 node = ASTNode(test_tree)
+                analyzer = CodeAnalyzer(node)
+                results = analyzer.analyze()
+                print(results)
 
         except FileNotFoundError:
             logging.exception(f"File not found: {file}")
