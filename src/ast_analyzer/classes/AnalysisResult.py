@@ -34,12 +34,15 @@ class AnalysisResult:
 
     def __str__(self) -> str:
         """Return a user-friendly summary of the analysis."""
-        return f"""
-        Analysis Complete! There are {len(self)} changes to implement
+        if self:
+            return "Congrats! No errors or warnings found in directory"
+        else:
+            return f"""
+            Analysis Complete! There are {len(self)} changes to implement
 
-        Warnings: {len(self.results['warnings'])}
-        Errors: {len(self.results['errors'])}
-        """
+            Warnings: {len(self.results['warnings'])}
+            Errors: {len(self.results['errors'])}
+            """
 
     def __len__(self) -> int:
         """Return the number of findings in the results."""
