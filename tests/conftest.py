@@ -151,7 +151,7 @@ def empty_analysis_result():
 def populated_analysis_result():
     """Create an AnalysisResult with sample findings."""
     result = AnalysisResult()
-    result.results.append({"type": "warning", "message": "Too many functions"})
-    result.results.append({"type": "error", "message": "Function too long"})
-    result.results.append({"type": "info", "message": "Consider refactoring"})
+    result.append_warning("Too many functions", "file1.py")
+    result.append_error("Function too long", "file2.py")
+    result.append_warning("Consider refactoring", "file3.py")
     return result

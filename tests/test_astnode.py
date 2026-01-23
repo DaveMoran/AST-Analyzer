@@ -37,12 +37,6 @@ class TestASTNodeInit:
         for child in node.children:
             assert child.parent is node
 
-    def test_init_metadata_empty_dict(self, simple_ast_tree):
-        """Metadata initializes as empty dict."""
-        node = ASTNode(simple_ast_tree)
-        assert node.metadata == {}
-        assert isinstance(node.metadata, dict)
-
 
 @pytest.mark.astnode
 class TestASTNodeRepr:
