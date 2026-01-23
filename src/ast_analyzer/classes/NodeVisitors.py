@@ -3,6 +3,7 @@ Group of classes that maintain all of the Node Visitors we'll be using for our
 AST Analyzer
 """
 
+import ast
 from ast_analyzer.ASTNode import ASTNodeVisitor
 
 
@@ -57,29 +58,25 @@ class MissingDocstringCounter(ASTNodeVisitor):
         return f"Node is missing {self.count} docstrings"
 
     def visit_FunctionDef(self, node):
-        """Called when a function call (ast.Call node) is encountered."""
-        if not node.metadata["has_docstring"]:
+        """Called when a FunctionDef node is encountered."""
+        if not ast.get_docstring(node.node):
             self.count += 1
-        # Continue visiting child nodes to find nested calls, arguments, etc.
         self.generic_visit(node)
 
     def visit_AsyncFunctionDef(self, node):
-        """Called when an async function call (ast.Call node) is encountered."""
-        if not node.metadata["has_docstring"]:
+        """Called when an AsyncFunctionDef node is encountered."""
+        if not ast.get_docstring(node.node):
             self.count += 1
-        # Continue visiting child nodes to find nested calls, arguments, etc.
         self.generic_visit(node)
 
     def visit_ClassDef(self, node):
-        """Called when a class call (ast.Call node) is encountered."""
-        if not node.metadata["has_docstring"]:
+        """Called when a ClassDef node is encountered."""
+        if not ast.get_docstring(node.node):
             self.count += 1
-        # Continue visiting child nodes to find nested calls, arguments, etc.
         self.generic_visit(node)
 
     def visit_Module(self, node):
-        """Called when a module call (ast.Call node) is encountered."""
-        if not node.metadata["has_docstring"]:
+        """Called when a Module node is encountered."""
+        if not ast.get_docstring(node.node):
             self.count += 1
-        # Continue visiting child nodes to find nested calls, arguments, etc.
         self.generic_visit(node)
