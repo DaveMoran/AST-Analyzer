@@ -33,6 +33,7 @@ class CodeAnalyzer:
         """
         self._check_function_count()
         self._check_class_count()
+        self._check_docstring_coverage()
         return self.results
 
     def _check_function_complexity(self):
@@ -59,7 +60,7 @@ class CodeAnalyzer:
                 num_funcs += 1
 
         if num_funcs >= 8:
-            self.results.append_warning(
+            self.results.append_error(
                 f"Too many functions ({num_funcs}).",
             )
         elif num_funcs >= 5:
@@ -78,7 +79,7 @@ class CodeAnalyzer:
                 num_classes += 1
 
         if num_classes >= 8:
-            self.results.append_warning(
+            self.results.append_error(
                 f"Too many classes ({num_classes}).",
             )
         elif num_classes >= 5:
@@ -92,7 +93,23 @@ class CodeAnalyzer:
         If >= 1, add to warnings list.
         If >= 5, add to errors list.
         """
-        pass
+        counter = 0
+        for node in self.tree:
+            if node.get_type() in [
+                "FunctionDef",
+                "AsyncFunctionDef",
+                "ClassDef",
+                "Module",
+            ]:
+                if not node.metadata["has_docstring"]:
+                    counter += 1
+
+        if counter >= 5:
+            self.results.append_error(
+                f"Too many items without docstring ({counter})",
+            )
+        elif counter >= 1:
+            self.results.append_warning(f"Missing {counter} docstrings")
 
     def _check_unused_imports(self):
         """
