@@ -23,7 +23,19 @@ class ASTNode:
         self.node = node
         self.parent = parent
         self.children = []
-        self.metadata: dict[Any, Any] = {"node_type": type(node).__name__}
+        self.has_docstring = False
+        if type(node).__name__ in [
+            "FunctionDef",
+            "AsyncFunctionDef",
+            "ClassDef",
+            "Module",
+        ] and ast.get_docstring(node):
+            self.has_docstring = True
+
+        self.metadata: dict[Any, Any] = {
+            "node_type": type(node).__name__,
+            "has_docstring": self.has_docstring,
+        }
 
         for child in ast.iter_child_nodes(self.node):
             self.children.append(ASTNode(child, self))
