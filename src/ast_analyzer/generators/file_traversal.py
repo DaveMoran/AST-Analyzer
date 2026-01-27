@@ -7,14 +7,14 @@ A list of helper functions that can be reused throughout the application
 import fnmatch
 import logging
 import os
+import pathlib
 import pathspec
 
-from pathlib import Path
-from typing import Generator, Collection
+from typing import Collection, Generator
 
 
-def read_from_directory(directory: str) -> Generator[Path, None, None]:
-    dir_path = Path(directory)
+def read_from_directory(directory: str) -> Generator[pathlib.Path, None, None]:
+    dir_path = pathlib.Path(directory)
     if not dir_path.is_dir():
         logging.error(f"Directory {dir_path} is not a valid directory")
         return
@@ -27,23 +27,23 @@ def read_from_directory(directory: str) -> Generator[Path, None, None]:
             logging.warning(f"Cannot access {file_path}: {e}")
 
 
-def read_lines(filepath: Path) -> Generator[str, None, None]:
+def read_lines(filepath: pathlib.Path) -> Generator[str, None, None]:
     with open(filepath) as f:
         for line in f:
             yield line
 
 
 def filter_python_files(
-    files: Generator[Path, None, None],
-) -> Generator[Path, None, None]:
+    files: Generator[pathlib.Path, None, None],
+) -> Generator[pathlib.Path, None, None]:
     for file in files:
         file_extension = file.suffix
         if file_extension == ".py":
             yield file
 
 
-def filter_by_gitignore(files: Generator[Path, None, None], ignore_file: str):
-    gitignore_path = Path(ignore_file)
+def filter_by_gitignore(files: Generator[pathlib.Path, None, None], ignore_file: str):
+    gitignore_path = pathlib.Path(ignore_file)
 
     if not gitignore_path.exists():
         logging.warning("No gitignore file found. Returning all files")
@@ -59,8 +59,8 @@ def filter_by_gitignore(files: Generator[Path, None, None], ignore_file: str):
 
 
 def filter_by_custom_matches(
-    files: Generator[Path, None, None], matches: Collection[str] | None
-) -> Generator[Path, None, None]:
+    files: Generator[pathlib.Path, None, None], matches: Collection[str] | None
+) -> Generator[pathlib.Path, None, None]:
     if not matches:
         yield from files
         return
@@ -72,8 +72,8 @@ def filter_by_custom_matches(
 
 
 def skip_virtual_envs(
-    files: Generator[Path, None, None],
-) -> Generator[Path, None, None]:
+    files: Generator[pathlib.Path, None, None],
+) -> Generator[pathlib.Path, None, None]:
     virtual_envs = ["venv/", ".venv/", "env/"]
     for file in files:
         full_path = str(file)
@@ -81,7 +81,7 @@ def skip_virtual_envs(
             yield file
 
 
-def skip_cache(files: Generator[Path, None, None]) -> Generator[Path, None, None]:
+def skip_cache(files: Generator[pathlib.Path, None, None]) -> Generator[pathlib.Path, None, None]:
     caches = ["__pycache__/", ".mypy_cache/", ".pytest_cache/", ".ruff_cache/"]
     for file in files:
         full_path = str(file)
@@ -89,7 +89,7 @@ def skip_cache(files: Generator[Path, None, None]) -> Generator[Path, None, None
             yield file
 
 
-def skip_git(files: Generator[Path, None, None]) -> Generator[Path, None, None]:
+def skip_git(files: Generator[pathlib.Path, None, None]) -> Generator[pathlib.Path, None, None]:
     for file in files:
         full_path = str(file)
         if ".git" not in full_path:
@@ -100,7 +100,7 @@ def get_working_files(
     directory: str,
     custom_matches: Collection[str] | None = None,
     gitignore_path: str = ".gitignore",
-) -> Generator[Path, None, None]:
+) -> Generator[pathlib.Path, None, None]:
     """Parent generator for getting a final list of files to traverse
 
     Using a number of generators, this function traverses a parent directory and

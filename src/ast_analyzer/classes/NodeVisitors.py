@@ -4,10 +4,11 @@ AST Analyzer
 """
 
 import ast
-from ast_analyzer.ASTNode import ASTNodeVisitor
+
+from ast_analyzer import ASTNode
 
 
-class FunctionCounter(ASTNodeVisitor):
+class FunctionCounter(ASTNode.ASTNodeVisitor):
     """Counts FunctionDef and AsyncFunctionDef nodes using ASTNode trees."""
 
     def __init__(self):
@@ -29,7 +30,7 @@ class FunctionCounter(ASTNodeVisitor):
         self.generic_visit(node)
 
 
-class ClassCounter(ASTNodeVisitor):
+class ClassCounter(ASTNode.ASTNodeVisitor):
     """Counts ClassDef nodes using ASTNode trees."""
 
     def __init__(self):
@@ -45,7 +46,7 @@ class ClassCounter(ASTNodeVisitor):
         self.generic_visit(node)
 
 
-class MissingDocstringCounter(ASTNodeVisitor):
+class MissingDocstringCounter(ASTNode.ASTNodeVisitor):
     """Checks if FunctionDef, AsyncFunctionDef, ClassDef, and Module nodes contain docstrings using ASTNode trees."""
 
     def __init__(self):
@@ -82,7 +83,7 @@ class MissingDocstringCounter(ASTNodeVisitor):
         self.generic_visit(node)
 
 
-class FunctionLineCounter(ASTNodeVisitor):
+class FunctionLineCounter(ASTNode.ASTNodeVisitor):
     """Counts FunctionDef and AsyncFunctionDef nodes using ASTNode trees."""
 
     def __init__(self):
@@ -112,7 +113,7 @@ class FunctionLineCounter(ASTNodeVisitor):
         self.generic_visit(node)
 
 
-class ComplexityCounter(ASTNodeVisitor):
+class ComplexityCounter(ASTNode.ASTNodeVisitor):
     """
     Calculates complexity score for functions based on:
     - Branches: if, elif, ternary expressions (+1 each)

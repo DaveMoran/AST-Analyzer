@@ -1,14 +1,14 @@
 import time
 
-from ast_analyzer.decorators.timer import timer
+from ast_analyzer.decorators import timer
 
 
-@timer
+@timer.timer
 def factorial(n):
     return 1 if n < 2 else n * factorial(n - 1)
 
 
-@timer
+@timer.timer
 def timed_sleep(duration):
     time.sleep(duration)
     return "Done"
@@ -17,7 +17,7 @@ def timed_sleep(duration):
 def test_repr():
     """Decorator __repr__ shows call count and total time."""
 
-    @timer
+    @timer.timer
     def quick_fn():
         return 1
 
@@ -49,7 +49,7 @@ def test_longer_time(capsys):
 def test_accumulated_time():
     """Decorator should print out combined time"""
 
-    @timer
+    @timer.timer
     def local_timed_sleep(duration):
         time.sleep(duration)
         return "Done"

@@ -26,7 +26,7 @@ class AnalysisResult:
 
     def __init__(self) -> None:
         """Initialize an empty AnalysisResult with no findings."""
-        self.results: list[dict[str, Any]] = {
+        self.results: dict[str, Any] = {
             "warnings": [],
             "errors": [],
             "files": set(),
@@ -40,14 +40,29 @@ class AnalysisResult:
         """Return a user-friendly summary of the analysis."""
         if not self:
             return "Congrats! No errors or warnings found in directory"
-        else:
-            return f"""
-            Analysis Complete! There are {len(self)} changes to implement
 
-            Warnings: {len(self.results["warnings"])}
-            Errors: {len(self.results["errors"])}
-            Files to Change: {len(self.results["files"])}
-            """
+        warnings_list = self._format_findings(self.results["warnings"])
+        errors_list = self._format_findings(self.results["errors"])
+
+        return f"""
+Analysis Complete! There are {len(self)} changes to implement
+
+Warnings: {len(self.results["warnings"])}
+Errors: {len(self.results["errors"])}
+Files to Change: {len(self.results["files"])}
+
+Warnings:
+{warnings_list}
+
+Errors:
+{errors_list}
+"""
+
+    def _format_findings(self, findings: list[dict[str, Any]]) -> str:
+        """Format a list of findings as a bulleted list."""
+        if not findings:
+            return "  (none)"
+        return "\n".join(f"  - {f['file']}: {f['message']}" for f in findings)
 
     def __len__(self) -> int:
         """Return the number of findings in the results."""
@@ -97,9 +112,9 @@ class AnalysisResult:
         return combined
 
     def append_warning(self, message, filename):
-        self.results["warnings"].append({"file": filename, message: message})
+        self.results["warnings"].append({"file": filename, "message": message})
         self.results["files"].add(filename)
 
     def append_error(self, message, filename):
-        self.results["errors"].append({"file": filename, message: message})
+        self.results["errors"].append({"file": filename, "message": message})
         self.results["files"].add(filename)

@@ -54,7 +54,7 @@ dev = [
 
 [project.scripts]
 # Add script entry points here:
-AST-Analyzer = "dm_ast_analyzer:main"
+ast-analyzer = "ast_analyzer.main:main"
 
 
 # ---- Build system ----

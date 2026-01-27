@@ -1,10 +1,10 @@
 import logging
 import pytest
 
-from ast_analyzer.decorators.logger import logger
+from ast_analyzer.decorators import logger
 
 
-@logger(logging.DEBUG)
+@logger.logger(logging.DEBUG)
 def add(a, b):
     return a + b
 
@@ -17,7 +17,7 @@ def test_ast_log_defaults(caplog):
     assert "add" in caplog.text
 
 
-@logger(logging.DEBUG, name="Subtraction")
+@logger.logger(logging.DEBUG, name="Subtraction")
 def sub(a, b):
     return a - b
 
@@ -30,7 +30,7 @@ def test_with_custom_name(caplog):
     assert "Subtraction" in caplog.text
 
 
-@logger(logging.DEBUG, message="Custom Message")
+@logger.logger(logging.DEBUG, message="Custom Message")
 def mult(a, b):
     return a * b
 
@@ -43,7 +43,7 @@ def test_with_custom_msg(caplog):
     assert "Custom Message" in caplog.text
 
 
-@logger(logging.INFO, name="Math.Div", message="Division operation")
+@logger.logger(logging.INFO, name="Math.Div", message="Division operation")
 def div(a, b):
     return a / b
 
@@ -57,7 +57,7 @@ def test_ast_log_full_custom(caplog):
     assert "Division operation" in caplog.text
 
 
-@logger(logging.DEBUG)
+@logger.logger(logging.DEBUG)
 def failing_func():
     raise ValueError("test error")
 
