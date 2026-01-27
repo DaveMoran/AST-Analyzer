@@ -50,8 +50,7 @@ def main():
                 analyzer = CodeAnalyzer(node, file, results)
 
                 # Step 7: Generate a report based on findings
-                new_result = analyzer.analyze()
-                results += new_result
+                analyzer.analyze()
 
         except FileNotFoundError:
             logging.exception(f"File not found: {file}")
