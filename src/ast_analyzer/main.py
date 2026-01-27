@@ -15,6 +15,7 @@ from ast_analyzer.parser import Parser
 from ast_analyzer.analyzer import CodeAnalyzer
 from ast_analyzer.classes.AnalysisResult import AnalysisResult
 
+
 def main():
     # Step 1: Parse CLI arguments for directory
     parser = argparse.ArgumentParser(
