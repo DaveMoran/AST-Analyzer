@@ -26,7 +26,7 @@ class AnalysisResult:
 
     def __init__(self) -> None:
         """Initialize an empty AnalysisResult with no findings."""
-        self.results: list[dict[str, Any]] = {
+        self.results: dict[str, Any] = {
             "warnings": [],
             "errors": [],
             "files": set(),
