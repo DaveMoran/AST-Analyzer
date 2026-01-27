@@ -112,7 +112,9 @@ class TestFilterByGitignore:
     def test_missing_gitignore_yields_all_files(self, tmp_path, caplog):
         files = [pathlib.Path("main.py"), pathlib.Path("utils.py")]
 
-        result = list(file_traversal.filter_by_gitignore(iter(files), str(tmp_path / "nonexistent")))
+        result = list(
+            file_traversal.filter_by_gitignore(iter(files), str(tmp_path / "nonexistent"))
+        )
 
         assert len(result) == 2
         assert "No gitignore file found" in caplog.text
@@ -241,7 +243,9 @@ class TestSkipGit:
 class TestGetWorkingFiles:
     def test_returns_only_python_files(self, temp_project):
         files = list(
-            file_traversal.get_working_files(str(temp_project), gitignore_path=str(temp_project / ".gitignore"))
+            file_traversal.get_working_files(
+                str(temp_project), gitignore_path=str(temp_project / ".gitignore")
+            )
         )
         extensions = {f.suffix for f in files}
 
@@ -249,7 +253,9 @@ class TestGetWorkingFiles:
 
     def test_excludes_venv_files(self, temp_project):
         files = list(
-            file_traversal.get_working_files(str(temp_project), gitignore_path=str(temp_project / ".gitignore"))
+            file_traversal.get_working_files(
+                str(temp_project), gitignore_path=str(temp_project / ".gitignore")
+            )
         )
         paths_str = [str(f) for f in files]
 
@@ -257,7 +263,9 @@ class TestGetWorkingFiles:
 
     def test_excludes_cache_files(self, temp_project):
         files = list(
-            file_traversal.get_working_files(str(temp_project), gitignore_path=str(temp_project / ".gitignore"))
+            file_traversal.get_working_files(
+                str(temp_project), gitignore_path=str(temp_project / ".gitignore")
+            )
         )
         paths_str = [str(f) for f in files]
 
@@ -265,7 +273,9 @@ class TestGetWorkingFiles:
 
     def test_excludes_git_files(self, temp_project):
         files = list(
-            file_traversal.get_working_files(str(temp_project), gitignore_path=str(temp_project / ".gitignore"))
+            file_traversal.get_working_files(
+                str(temp_project), gitignore_path=str(temp_project / ".gitignore")
+            )
         )
         paths_str = [str(f) for f in files]
 
@@ -286,7 +296,9 @@ class TestGetWorkingFiles:
 
     def test_returns_expected_source_files(self, temp_project):
         files = list(
-            file_traversal.get_working_files(str(temp_project), gitignore_path=str(temp_project / ".gitignore"))
+            file_traversal.get_working_files(
+                str(temp_project), gitignore_path=str(temp_project / ".gitignore")
+            )
         )
         filenames = [f.name for f in files]
 
