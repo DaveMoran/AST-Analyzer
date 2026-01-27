@@ -7,7 +7,7 @@ import os
 
 import pytest
 
-from ast_analyzer.parser import Parser
+from ast_analyzer import parser
 
 
 @pytest.fixture
@@ -28,42 +28,42 @@ class TestParserContextManager:
     def test_parser_enter_returns_file_object(self, temp_python_file):
         """Test that __enter__ returns the file object"""
         path = temp_python_file("x = 1")
-        with Parser(path) as f:
+        with parser.Parser(path) as f:
             assert hasattr(f, "read")
             assert hasattr(f, "readline")
 
     def test_parser_opens_and_closes_file(self, temp_python_file):
         """Test that Parser properly opens and closes a file"""
         path = temp_python_file("print('hello')")
-        with Parser(path) as f:
+        with parser.Parser(path) as f:
             content = f.read()
             assert content == "print('hello')"
 
     def test_parser_file_closed_after_exit(self, temp_python_file):
         """Test that file is closed after exiting context"""
         path = temp_python_file("x = 1")
-        parser = Parser(path)
-        with parser:
+        parser_inst = parser.Parser(path)
+        with parser_inst:
             pass
-        assert parser.file.closed
+        assert parser_inst.file.closed
 
     def test_parser_file_closed_on_exception(self, temp_python_file):
         """Test that file is closed even when an exception occurs inside the block"""
         path = temp_python_file("x = 1")
-        parser = Parser(path)
+        parser_inst = parser.Parser(path)
         with pytest.raises(ValueError):
-            with parser:
+            with parser_inst:
                 raise ValueError("Test exception")
-        assert parser.file.closed
+        assert parser_inst.file.closed
 
     def test_parser_reuse_raises_error(self, temp_python_file):
         """Test that reusing same Parser instance fails after file is closed"""
         path = temp_python_file("x = 1")
-        parser = Parser(path)
-        with parser:
+        parser_inst = parser.Parser(path)
+        with parser_inst:
             pass
         with pytest.raises(ValueError):
-            with parser:
+            with parser_inst:
                 pass
 
 
@@ -73,7 +73,7 @@ class TestParserErrorHandling:
     def test_parser_file_not_found_raises_exception(self):
         """Test that FileNotFoundError is raised for non-existent files"""
         with pytest.raises(FileNotFoundError):
-            with Parser("/nonexistent/path/file.py"):
+            with parser.Parser("/nonexistent/path/file.py"):
                 pass
 
     def test_parser_permission_denied(self, temp_python_file):
@@ -82,7 +82,7 @@ class TestParserErrorHandling:
         os.chmod(path, 0o000)
         try:
             with pytest.raises(PermissionError):
-                with Parser(path):
+                with parser.Parser(path):
                     pass
         finally:
             os.chmod(path, 0o644)
@@ -90,13 +90,13 @@ class TestParserErrorHandling:
     def test_parser_directory_path_raises_error(self):
         """Test that IsADirectoryError is raised when given a directory"""
         with pytest.raises(IsADirectoryError):
-            with Parser("/tmp"):
+            with parser.Parser("/tmp"):
                 pass
 
     def test_parser_empty_file(self, temp_python_file):
         """Test that Parser handles empty files correctly"""
         path = temp_python_file("")
-        with Parser(path) as f:
+        with parser.Parser(path) as f:
             content = f.read()
             assert content == ""
 
@@ -113,7 +113,7 @@ class Foo:
     pass
 """
         path = temp_python_file(code)
-        with Parser(path) as f:
+        with parser.Parser(path) as f:
             content = f.read()
             assert "def hello():" in content
             assert "class Foo:" in content
@@ -122,7 +122,7 @@ class Foo:
         """Test that Parser handles UTF-8 encoded files"""
         code = "# Comment with émojis 🎉 and spëcial characters"
         path = temp_python_file(code)
-        with Parser(path) as f:
+        with parser.Parser(path) as f:
             content = f.read()
             assert "émojis" in content
             assert "🎉" in content
@@ -137,7 +137,7 @@ class TestParserASTIntegration:
     return f"Hello, {name}"
 """
         path = temp_python_file(code)
-        with Parser(path) as f:
+        with parser.Parser(path) as f:
             content = f.read()
             tree = ast.parse(content)
             assert isinstance(tree, ast.Module)
@@ -148,7 +148,7 @@ class TestParserASTIntegration:
         """Test that invalid Python syntax raises SyntaxError during ast.parse"""
         code = "def broken(:\n    pass"
         path = temp_python_file(code)
-        with Parser(path) as f:
+        with parser.Parser(path) as f:
             content = f.read()
             with pytest.raises(SyntaxError):
                 ast.parse(content)
@@ -161,14 +161,14 @@ class TestParserEnter:
     def test_enter_opens_file(self, sample_code_file):
         """__enter__ opens the file and returns file object."""
         filepath = sample_code_file("x = 1")
-        with Parser(filepath) as f:
+        with parser.Parser(filepath) as f:
             assert f is not None
             assert not f.closed
 
     def test_enter_file_readable(self, sample_code_file):
         """Opened file can be read."""
         filepath = sample_code_file("x = 1\ny = 2")
-        with Parser(filepath) as f:
+        with parser.Parser(filepath) as f:
             content = f.read()
             assert "x = 1" in content
 
@@ -180,27 +180,27 @@ class TestParserExit:
     def test_exit_closes_file(self, sample_code_file):
         """__exit__ closes the file."""
         filepath = sample_code_file("test content")
-        parser = Parser(filepath)
-        f = parser.__enter__()
+        parser_inst = parser.Parser(filepath)
+        f = parser_inst.__enter__()
         assert not f.closed
-        parser.__exit__(None, None, None)
+        parser_inst.__exit__(None, None, None)
         assert f.closed
 
     def test_exit_returns_false(self, sample_code_file):
         """__exit__ returns False (doesn't suppress exceptions)."""
         filepath = sample_code_file("test")
-        parser = Parser(filepath)
-        parser.__enter__()
-        result = parser.__exit__(None, None, None)
+        parser_inst = parser.Parser(filepath)
+        parser_inst.__enter__()
+        result = parser_inst.__exit__(None, None, None)
         assert result is False
 
     def test_exit_with_exception(self, sample_code_file):
         """__exit__ handles exceptions and still closes file."""
         filepath = sample_code_file("test")
-        parser = Parser(filepath)
-        f = parser.__enter__()
+        parser_inst = parser.Parser(filepath)
+        f = parser_inst.__enter__()
         # Simulate an exception occurring
-        result = parser.__exit__(ValueError, ValueError("test error"), None)
+        result = parser_inst.__exit__(ValueError, ValueError("test error"), None)
         assert f.closed
         assert result is False  # Exception not suppressed
 
@@ -213,7 +213,7 @@ class TestParserContextManager:
         """Parser works correctly as context manager."""
         filepath = sample_code_file("print('hello')")
         file_ref = None
-        with Parser(filepath) as f:
+        with parser.Parser(filepath) as f:
             file_ref = f
             assert not f.closed
         assert file_ref.closed
@@ -223,7 +223,7 @@ class TestParserContextManager:
         filepath = sample_code_file("content")
         file_ref = None
         with pytest.raises(ValueError):
-            with Parser(filepath) as f:
+            with parser.Parser(filepath) as f:
                 file_ref = f
                 raise ValueError("test error")
         assert file_ref.closed
@@ -232,5 +232,5 @@ class TestParserContextManager:
         """Opening nonexistent file raises FileNotFoundError."""
         nonexistent = str(tmp_path / "does_not_exist.py")
         with pytest.raises(FileNotFoundError):
-            with Parser(nonexistent) as f:
+            with parser.Parser(nonexistent) as f:
                 pass

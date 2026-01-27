@@ -1,6 +1,7 @@
 import ast
 import pytest
-from ast_analyzer.ASTNode import ASTNode
+
+from ast_analyzer import ASTNode
 
 
 @pytest.mark.astnode
@@ -9,31 +10,31 @@ class TestASTNodeInit:
 
     def test_init_creates_node(self, simple_ast_tree):
         """ASTNode wraps the provided AST node."""
-        node = ASTNode(simple_ast_tree)
+        node = ASTNode.ASTNode(simple_ast_tree)
         assert node.node is simple_ast_tree
 
     def test_init_parent_default_none(self, simple_ast_tree):
         """Parent defaults to None for root nodes."""
-        node = ASTNode(simple_ast_tree)
+        node = ASTNode.ASTNode(simple_ast_tree)
         assert node.parent is None
 
     def test_init_parent_assignment(self, simple_ast_tree):
         """Parent can be explicitly set."""
-        parent = ASTNode(simple_ast_tree)
+        parent = ASTNode.ASTNode(simple_ast_tree)
         child_ast = ast.parse("y = 2")
-        child = ASTNode(child_ast, parent=parent)
+        child = ASTNode.ASTNode(child_ast, parent=parent)
         assert child.parent is parent
 
     def test_init_creates_children_recursively(self, simple_ast_tree):
         """Children are created for all child AST nodes."""
-        node = ASTNode(simple_ast_tree)
+        node = ASTNode.ASTNode(simple_ast_tree)
         # simple_ast_tree is "x = 1" which has one Assign child
         assert len(node.children) == 1
-        assert isinstance(node.children[0], ASTNode)
+        assert isinstance(node.children[0], ASTNode.ASTNode)
 
     def test_init_children_have_parent_set(self, simple_ast_tree):
         """All children have their parent reference set correctly."""
-        node = ASTNode(simple_ast_tree)
+        node = ASTNode.ASTNode(simple_ast_tree)
         for child in node.children:
             assert child.parent is node
 
@@ -53,12 +54,12 @@ class TestASTNodeRepr:
     def test_repr_format(self, code, expected_type):
         """__repr__ returns ASTNode({node_type})."""
         tree = ast.parse(code)
-        node = ASTNode(tree)
+        node = ASTNode.ASTNode(tree)
         assert repr(node) == f"ASTNode({expected_type})"
 
     def test_repr_child_node_type(self, simple_ast_tree):
         """Child nodes show their specific type."""
-        node = ASTNode(simple_ast_tree)
+        node = ASTNode.ASTNode(simple_ast_tree)
         child = node.children[0]
         assert repr(child) == "ASTNode(Assign)"
 
@@ -79,7 +80,7 @@ class TestASTNodeStr:
     def test_str_shows_children_count(self, code, expected_count):
         """__str__ displays the number of children."""
         tree = ast.parse(code)
-        node = ASTNode(tree)
+        node = ASTNode.ASTNode(tree)
         assert str(node) == f"AST Node | Children: {expected_count}"
 
 
@@ -108,7 +109,7 @@ class TestASTNodeGetitem:
     def test_getitem_valid_index(self, ast_node):
         """Valid index returns the child ASTNode."""
         child = ast_node[0]
-        assert isinstance(child, ASTNode)
+        assert isinstance(child, ASTNode.ASTNode)
 
     def test_getitem_negative_index(self, complex_ast_node):
         """Negative index returns from end."""
@@ -144,7 +145,7 @@ class TestASTNodeIter:
         """Can use ASTNode in for loop."""
         count = 0
         for child in ast_node:
-            assert isinstance(child, ASTNode)
+            assert isinstance(child, ASTNode.ASTNode)
             count += 1
         assert count == len(ast_node)
 
@@ -182,14 +183,14 @@ class TestASTNodeEq:
 
     def test_eq_same_underlying_node(self, simple_ast_tree):
         """Two ASTNodes wrapping same AST node are equal."""
-        node1 = ASTNode(simple_ast_tree)
-        node2 = ASTNode(simple_ast_tree)
+        node1 = ASTNode.ASTNode(simple_ast_tree)
+        node2 = ASTNode.ASTNode(simple_ast_tree)
         assert node1 == node2
 
     def test_eq_different_underlying_nodes(self, simple_ast_tree, complex_ast_tree):
         """ASTNodes wrapping different AST nodes are not equal."""
-        node1 = ASTNode(simple_ast_tree)
-        node2 = ASTNode(complex_ast_tree)
+        node1 = ASTNode.ASTNode(simple_ast_tree)
+        node2 = ASTNode.ASTNode(complex_ast_tree)
         assert node1 != node2
 
     def test_eq_non_astnode_raises_attribute_error(self, ast_node):
