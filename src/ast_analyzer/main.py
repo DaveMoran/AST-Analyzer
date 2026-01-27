@@ -4,6 +4,7 @@ ast_analyzer.main
 Entry point for the AST Analyzer application
 """
 
+import argparse
 import ast
 import logging
 import textwrap
@@ -18,8 +19,17 @@ logging.basicConfig(level=logging.INFO)
 
 
 def main():
-    # Step 1: Ask user for directory of files
-    directory = "./src/ast_analyzer"  # TODO - swap out with CLI command when we get to that story
+    # Step 1: Parse CLI arguments for directory
+    parser = argparse.ArgumentParser(
+        prog="ast-analyzer",
+        description="Analyze Python codebases for code quality metrics",
+    )
+    parser.add_argument(
+        "directory",
+        help="Path to the directory to analyze",
+    )
+    args = parser.parse_args()
+    directory = args.directory
 
     # Step 2: Filter out all invalid files from directory
     working_files = get_working_files(directory)
