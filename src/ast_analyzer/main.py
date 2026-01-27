@@ -9,11 +9,11 @@ import ast
 import logging
 import textwrap
 
-from ast_analyzer.ASTNode import ASTNode
-from ast_analyzer.generators.file_traversal import get_working_files
-from ast_analyzer.parser import Parser
-from ast_analyzer.analyzer import CodeAnalyzer
-from ast_analyzer.classes.AnalysisResult import AnalysisResult
+from ast_analyzer import ASTNode
+from ast_analyzer import analyzer
+from ast_analyzer import parser
+from ast_analyzer.classes import AnalysisResult
+from ast_analyzer.generators import file_traversal
 
 
 def main():
@@ -40,25 +40,25 @@ def main():
     directory = args.directory
 
     # Step 2: Filter out all invalid files from directory
-    working_files = get_working_files(directory)
-    results = AnalysisResult()
+    working_files = file_traversal.get_working_files(directory)
+    results = AnalysisResult.AnalysisResult()
 
     # Step 3: Start iterating through each file
     for file in working_files:
         # Step 4: Parse through the lines of each file
         try:
-            with Parser(file) as f:
+            with parser.Parser(file) as f:
                 # Step 5: Create an AST Node of each file
                 content = f.read()
                 dedented_code = textwrap.dedent(content)
                 test_tree = ast.parse(dedented_code)
-                node = ASTNode(test_tree)
+                node = ASTNode.ASTNode(test_tree)
 
                 # Step 6: Run the nodes through our analysis
-                analyzer = CodeAnalyzer(node, file, results)
+                code_analyzer = analyzer.CodeAnalyzer(node, file, results)
 
                 # Step 7: Generate a report based on findings
-                analyzer.analyze()
+                code_analyzer.analyze()
 
         except FileNotFoundError:
             logging.exception(f"File not found: {file}")

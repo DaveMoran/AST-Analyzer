@@ -5,14 +5,8 @@ Responsible for going through the parsed files and determining what updates shou
 criteria of suggestions
 """
 
-from ast_analyzer.classes.AnalysisResult import AnalysisResult
-from ast_analyzer.classes.NodeVisitors import (
-    FunctionCounter,
-    ClassCounter,
-    MissingDocstringCounter,
-    FunctionLineCounter,
-    ComplexityCounter,
-)
+from ast_analyzer.classes import AnalysisResult
+from ast_analyzer.classes import NodeVisitors
 
 
 def analyzer():
@@ -36,7 +30,7 @@ class CodeAnalyzer:
         results=None,
     ):
         self.tree = tree
-        self.results = results if results is not None else AnalysisResult()
+        self.results = results if results is not None else AnalysisResult.AnalysisResult()
         self.filename = filename.name
 
     def analyze(self):
@@ -65,7 +59,7 @@ class CodeAnalyzer:
         If >= 10, add to warnings list.
         If >= 15, add to errors list.
         """
-        counter = ComplexityCounter()
+        counter = NodeVisitors.ComplexityCounter()
         counter.visit(self.tree)
         score = counter.score
 
@@ -82,7 +76,7 @@ class CodeAnalyzer:
         If count >= 5, add a warning
         If count >= 8, add an error
         """
-        counter = FunctionCounter()
+        counter = NodeVisitors.FunctionCounter()
         counter.visit(self.tree)
         num_funcs = counter.count
 
@@ -98,7 +92,7 @@ class CodeAnalyzer:
         If >= 5, add to warnings list.
         If >= 8, add to errors list.
         """
-        counter = ClassCounter()
+        counter = NodeVisitors.ClassCounter()
         counter.visit(self.tree)
         num_classes = counter.count
 
@@ -115,7 +109,7 @@ class CodeAnalyzer:
         If >= 1, add to warnings list.
         If >= 5, add to errors list.
         """
-        counter = MissingDocstringCounter()
+        counter = NodeVisitors.MissingDocstringCounter()
         counter.visit(self.tree)
         num_missing_docstrings = counter.count
 
@@ -155,7 +149,7 @@ class CodeAnalyzer:
         If >= 50, add to warnings list.
         If >= 100, add to errors list.
         """
-        line_counter = FunctionLineCounter()
+        line_counter = NodeVisitors.FunctionLineCounter()
         line_counter.visit(self.tree)
         num_lines = line_counter.num_lines
 
