@@ -15,9 +15,6 @@ from ast_analyzer.parser import Parser
 from ast_analyzer.analyzer import CodeAnalyzer
 from ast_analyzer.classes.AnalysisResult import AnalysisResult
 
-logging.basicConfig(level=logging.INFO)
-
-
 def main():
     # Step 1: Parse CLI arguments for directory
     parser = argparse.ArgumentParser(
@@ -28,7 +25,17 @@ def main():
         "directory",
         help="Path to the directory to analyze",
     )
+    parser.add_argument(
+        "--show-logs",
+        action="store_true",
+        help="Show detailed logging output",
+    )
     args = parser.parse_args()
+
+    # Configure logging based on flag
+    log_level = logging.INFO if args.show_logs else logging.WARNING
+    logging.basicConfig(level=log_level)
+
     directory = args.directory
 
     # Step 2: Filter out all invalid files from directory
